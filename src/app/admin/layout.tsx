@@ -2,7 +2,8 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
+import { useAuth } from "@/context/AuthContext";
 
 const navItems = [
   {
@@ -116,7 +117,59 @@ export default function AdminLayout({
   children: React.ReactNode;
 }) {
   const pathname = usePathname();
+  const router = useRouter();
+  const { user, loading, logout } = useAuth();
   const [sidebarOpen, setSidebarOpen] = useState(false);
+
+  // Allow login page to render without auth
+  const isLoginPage = pathname === "/admin/login";
+
+  // Show loading spinner while checking auth
+  if (loading && !isLoginPage) {
+    return (
+      <div
+        style={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          minHeight: "100vh",
+          background: "#f8fafc",
+          fontFamily: "var(--font-body)",
+        }}
+      >
+        <div style={{ textAlign: "center" }}>
+          <div
+            style={{
+              width: 40,
+              height: 40,
+              border: "3px solid #e2e8f0",
+              borderTopColor: "#d97706",
+              borderRadius: "50%",
+              animation: "spin 0.8s linear infinite",
+              margin: "0 auto 1rem",
+            }}
+          />
+          <p style={{ color: "#64748b", fontSize: "0.875rem" }}>Loading...</p>
+        </div>
+      </div>
+    );
+  }
+
+  // Redirect if not authenticated or not admin (skip for login page)
+  if (!isLoginPage && (!user || user.role !== "admin")) {
+    router.replace("/admin/login");
+    return null;
+  }
+
+  // For login page, just render the children directly
+  if (isLoginPage) {
+    return <>{children}</>;
+  }
+
+  const handleLogout = async () => {
+    await logout();
+    router.push("/admin/login");
+  };
 
   return (
     <div
@@ -185,7 +238,7 @@ export default function AdminLayout({
                   fontSize: "0.7rem",
                   color: "#64748b",
                   letterSpacing: "0.05em",
-                  textTransform: "uppercase",
+                  textTransform: "uppercase" as const,
                 }}
               >
                 Admin Panel
@@ -198,7 +251,7 @@ export default function AdminLayout({
             style={{
               fontSize: "0.7rem",
               color: "#475569",
-              textTransform: "uppercase",
+              textTransform: "uppercase" as const,
               letterSpacing: "0.08em",
               fontWeight: 600,
               marginBottom: "0.75rem",
@@ -208,7 +261,11 @@ export default function AdminLayout({
             Menu
           </div>
           <nav
-            style={{ display: "flex", flexDirection: "column", gap: "0.25rem" }}
+            style={{
+              display: "flex",
+              flexDirection: "column" as const,
+              gap: "0.25rem",
+            }}
           >
             {navItems.map((item) => {
               const isActive =
@@ -236,7 +293,7 @@ export default function AdminLayout({
         style={{
           flex: 1,
           display: "flex",
-          flexDirection: "column",
+          flexDirection: "column" as const,
           minWidth: 0,
         }}
       >
@@ -248,12 +305,12 @@ export default function AdminLayout({
             alignItems: "center",
             justifyContent: "space-between",
             padding: "0.75rem 1.5rem",
-            position: "sticky",
+            position: "sticky" as const,
             top: 0,
             zIndex: 20,
           }}
         >
-          {/* Left: Hamburger (mobile) + Search */}
+          {/* Left: Hamburger + Search */}
           <div
             style={{
               display: "flex",
@@ -396,7 +453,7 @@ export default function AdminLayout({
                   fontFamily: "var(--font-heading)",
                 }}
               >
-                A
+                {user?.name?.charAt(0).toUpperCase() || "A"}
               </div>
               <div>
                 <div
@@ -407,29 +464,43 @@ export default function AdminLayout({
                     lineHeight: 1.2,
                   }}
                 >
-                  Admin
+                  {user?.name || "Admin"}
                 </div>
-                <div
-                  style={{
-                    fontSize: "0.65rem",
-                    color: "#94a3b8",
-                  }}
-                >
-                  admin@kulinarya.com
+                <div style={{ fontSize: "0.65rem", color: "#94a3b8" }}>
+                  {user?.email || "admin@kulinarya.com"}
                 </div>
               </div>
-              <svg
-                width="14"
-                height="14"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="#94a3b8"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
+              <button
+                onClick={handleLogout}
+                title="Logout"
+                style={{
+                  background: "none",
+                  border: "none",
+                  cursor: "pointer",
+                  color: "#94a3b8",
+                  padding: "0.25rem",
+                  display: "flex",
+                  alignItems: "center",
+                  transition: "color 0.2s ease",
+                }}
+                onMouseEnter={(e) => (e.currentTarget.style.color = "#ef4444")}
+                onMouseLeave={(e) => (e.currentTarget.style.color = "#94a3b8")}
               >
-                <path d="m6 9 6 6 6-6" />
-              </svg>
+                <svg
+                  width="16"
+                  height="16"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                >
+                  <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+                  <polyline points="16 17 21 12 16 7" />
+                  <line x1="21" x2="9" y1="12" y2="12" />
+                </svg>
+              </button>
             </div>
           </div>
         </header>
@@ -440,10 +511,12 @@ export default function AdminLayout({
         </main>
       </div>
 
-      {/* Mobile sidebar toggle CSS — inject via style tag */}
       <style>{`
         @media (max-width: 1024px) {
           .admin-menu-btn { display: flex !important; }
+        }
+        @keyframes spin {
+          to { transform: rotate(360deg); }
         }
       `}</style>
     </div>

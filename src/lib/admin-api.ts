@@ -6,7 +6,15 @@ import {
   ProductFormData,
 } from "./admin-types";
 
-const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000/api";
+const API_BASE = "/api";
+
+function getXsrfToken(): string {
+  const match = document.cookie
+    .split("; ")
+    .find((row) => row.startsWith("XSRF-TOKEN="));
+  if (!match) return "";
+  return decodeURIComponent(match.split("=")[1]);
+}
 
 async function adminFetch<T>(
   endpoint: string,
@@ -16,8 +24,10 @@ async function adminFetch<T>(
     headers: {
       "Content-Type": "application/json",
       Accept: "application/json",
+      "X-XSRF-TOKEN": getXsrfToken(),
       ...options?.headers,
     },
+    credentials: "include",
     ...options,
   });
 

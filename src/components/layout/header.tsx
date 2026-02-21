@@ -2,13 +2,21 @@
 
 import Link from "next/link";
 import { useCart } from "@/context/CartContext";
+import { useAuth } from "@/context/AuthContext";
 import { useState } from "react";
 import CartDrawer from "@/components/ui/CartDrawer";
 
 export default function Header() {
   const { totalItems } = useCart();
+  const { user, logout, openAuthModal } = useAuth();
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isProfileOpen, setIsProfileOpen] = useState(false);
+
+  const handleLogout = async () => {
+    setIsProfileOpen(false);
+    await logout();
+  };
 
   return (
     <>
@@ -45,8 +53,87 @@ export default function Header() {
               </Link>
             </nav>
 
-            {/* Cart + Mobile Menu */}
-            <div className="flex items-center gap-4">
+            {/* Right: Auth + Cart + Mobile Menu */}
+            <div className="flex items-center gap-3">
+              {/* Auth: User Profile or Login */}
+              {user ? (
+                <div style={{ position: "relative" }}>
+                  <button
+                    onClick={() => setIsProfileOpen(!isProfileOpen)}
+                    className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-surface-warm hover:bg-stone-200 transition-colors cursor-pointer"
+                  >
+                    <div
+                      className="w-7 h-7 rounded-full flex items-center justify-center text-white text-xs font-bold"
+                      style={{
+                        background: "linear-gradient(135deg, #d97706, #ea580c)",
+                      }}
+                    >
+                      {user.name.charAt(0).toUpperCase()}
+                    </div>
+                    <span className="text-sm font-medium text-foreground hidden sm:inline">
+                      {user.name}
+                    </span>
+                    <svg
+                      width="12"
+                      height="12"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      className="text-muted"
+                    >
+                      <path d="m6 9 6 6 6-6" />
+                    </svg>
+                  </button>
+
+                  {/* Dropdown */}
+                  {isProfileOpen && (
+                    <>
+                      <div
+                        className="fixed inset-0 z-40"
+                        onClick={() => setIsProfileOpen(false)}
+                      />
+                      <div
+                        className="absolute right-0 top-full mt-2 w-48 bg-white rounded-xl shadow-lg border border-border py-1 z-50"
+                        style={{ animation: "fadeIn 0.15s ease" }}
+                      >
+                        <div className="px-4 py-2 border-b border-border">
+                          <p className="text-sm font-medium text-foreground">
+                            {user.name}
+                          </p>
+                          <p className="text-xs text-muted">{user.email}</p>
+                        </div>
+                        {user.role === "admin" && (
+                          <Link
+                            href="/admin"
+                            className="block px-4 py-2 text-sm text-muted hover:text-primary hover:bg-surface-warm transition-colors"
+                            onClick={() => setIsProfileOpen(false)}
+                          >
+                            Admin Dashboard
+                          </Link>
+                        )}
+                        <button
+                          onClick={handleLogout}
+                          className="w-full text-left px-4 py-2 text-sm text-red-500 hover:bg-red-50 transition-colors cursor-pointer"
+                        >
+                          Sign Out
+                        </button>
+                      </div>
+                    </>
+                  )}
+                </div>
+              ) : (
+                <button
+                  onClick={openAuthModal}
+                  className="text-sm font-medium text-primary hover:text-accent transition-colors px-3 py-1.5 rounded-full hover:bg-surface-warm cursor-pointer"
+                >
+                  Login
+                </button>
+              )}
+
+              {/* Cart */}
               <button
                 id="cart-toggle"
                 onClick={() => setIsCartOpen(true)}

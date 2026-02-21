@@ -6,6 +6,7 @@ import Link from "next/link";
 import { Recipe, Product } from "@/lib/types";
 import { getRecipe } from "@/lib/api";
 import { useCart } from "@/context/CartContext";
+import { useAuth } from "@/context/AuthContext";
 
 export default function RecipeDetailPage({
   params,
@@ -18,6 +19,7 @@ export default function RecipeDetailPage({
   const [addedItems, setAddedItems] = useState<Set<number>>(new Set());
   const [allAdded, setAllAdded] = useState(false);
   const { addItem, addMultipleItems } = useCart();
+  const { user, openAuthModal } = useAuth();
 
   useEffect(() => {
     const fetchRecipe = async () => {
@@ -34,6 +36,10 @@ export default function RecipeDetailPage({
   }, [slug]);
 
   const handleBuyIngredient = (product: Product) => {
+    if (!user) {
+      openAuthModal();
+      return;
+    }
     addItem(product);
     setAddedItems((prev) => new Set(prev).add(product.id));
     setTimeout(() => {
@@ -46,6 +52,10 @@ export default function RecipeDetailPage({
   };
 
   const handleBuyAll = () => {
+    if (!user) {
+      openAuthModal();
+      return;
+    }
     if (!recipe?.ingredients) return;
     const purchasableProducts = recipe.ingredients
       .filter((i) => i.product !== null)
@@ -172,9 +182,7 @@ export default function RecipeDetailPage({
       {/* ── Ingredient List ── */}
       <div className="mb-10">
         <div className="flex items-center justify-between mb-6">
-          <h2 className="text-2xl font-bold font-heading">
-            Ingredients
-          </h2>
+          <h2 className="text-2xl font-bold font-heading">Ingredients</h2>
           {purchasableCount > 0 && (
             <span className="text-sm text-muted">
               🛒 {purchasableCount} available to buy
