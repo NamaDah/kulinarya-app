@@ -9,7 +9,7 @@ export default function Footer() {
           <div>
             <div className="flex items-center gap-2 mb-4">
               <span className="text-2xl">🍜</span>
-              <span className="text-xl font-bold font-[family-name:var(--font-heading)] text-white">
+              <span className="text-xl font-bold font-heading text-white">
                 Kulinarya
               </span>
             </div>
@@ -21,7 +21,7 @@ export default function Footer() {
 
           {/* Quick Links */}
           <div>
-            <h4 className="text-white font-semibold mb-4 font-[family-name:var(--font-heading)]">
+            <h4 className="text-white font-semibold mb-4 font-heading">
               Explore
             </h4>
             <ul className="space-y-2 text-sm">
@@ -54,7 +54,7 @@ export default function Footer() {
 
           {/* Cuisines */}
           <div>
-            <h4 className="text-white font-semibold mb-4 font-[family-name:var(--font-heading)]">
+            <h4 className="text-white font-semibold mb-4 font-heading">
               Cuisines
             </h4>
             <ul className="space-y-2 text-sm">

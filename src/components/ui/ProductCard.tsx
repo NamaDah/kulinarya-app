@@ -3,6 +3,7 @@
 import Image from "next/image";
 import { Product } from "@/lib/types";
 import { useCart } from "@/context/CartContext";
+import { useAuth } from "@/context/AuthContext";
 
 interface ProductCardProps {
   product: Product;
@@ -10,8 +11,17 @@ interface ProductCardProps {
 
 export default function ProductCard({ product }: ProductCardProps) {
   const { addItem } = useCart();
+  const { user, openAuthModal } = useAuth();
 
   const cuisineTag = product.category?.cuisine_type;
+
+  const handleAddToCart = () => {
+    if (!user) {
+      openAuthModal();
+      return;
+    }
+    addItem(product);
+  };
 
   return (
     <div className="glass-card overflow-hidden group">
@@ -42,7 +52,7 @@ export default function ProductCard({ product }: ProductCardProps) {
 
       {/* Content */}
       <div className="p-4">
-        <h3 className="font-semibold font-[family-name:var(--font-heading)] text-foreground text-lg mb-1 line-clamp-1">
+        <h3 className="font-semibold font-heading text-foreground text-lg mb-1 line-clamp-1">
           {product.name}
         </h3>
         <p className="text-muted text-sm mb-3 line-clamp-2">
@@ -58,7 +68,7 @@ export default function ProductCard({ product }: ProductCardProps) {
           </div>
           <button
             id={`add-to-cart-${product.slug}`}
-            onClick={() => addItem(product)}
+            onClick={handleAddToCart}
             disabled={!product.in_stock}
             className={`btn-buy ${!product.in_stock ? "opacity-50 cursor-not-allowed" : ""}`}
           >
