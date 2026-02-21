@@ -1,9 +1,8 @@
 import type { Metadata } from "next";
 import { Outfit, Inter } from "next/font/google";
 import "./globals.css";
-import Header from "@/components/layout/header";
-import Footer from "@/components/layout/footer";
 import { CartProvider } from "@/context/CartContext";
+import StoreShell from "@/components/layout/StoreShell";
 
 const outfit = Outfit({
   variable: "--font-heading",
@@ -32,9 +31,7 @@ export default function RootLayout({
     <html lang="en">
       <body className={`${outfit.variable} ${inter.variable} antialiased`}>
         <CartProvider>
-          <Header />
-          <main className="min-h-screen">{children}</main>
-          <Footer />
+          <StoreShell>{children}</StoreShell>
         </CartProvider>
       </body>
     </html>

@@ -172,7 +172,7 @@ export default function RecipeDetailPage({
       {/* ── Ingredient List ── */}
       <div className="mb-10">
         <div className="flex items-center justify-between mb-6">
-          <h2 className="text-2xl font-bold font-[family-name:var(--font-heading)]">
+          <h2 className="text-2xl font-bold font-heading">
             Ingredients
           </h2>
           {purchasableCount > 0 && (

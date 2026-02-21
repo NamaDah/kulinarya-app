@@ -42,7 +42,7 @@ export default function ProductCard({ product }: ProductCardProps) {
 
       {/* Content */}
       <div className="p-4">
-        <h3 className="font-semibold font-[family-name:var(--font-heading)] text-foreground text-lg mb-1 line-clamp-1">
+        <h3 className="font-semibold font-heading text-foreground text-lg mb-1 line-clamp-1">
           {product.name}
         </h3>
         <p className="text-muted text-sm mb-3 line-clamp-2">

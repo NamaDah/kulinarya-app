@@ -18,7 +18,7 @@ export default function Header() {
             {/* Logo */}
             <Link href="/" className="flex items-center gap-2 group">
               <span className="text-2xl">🍜</span>
-              <span className="text-xl font-bold font-[family-name:var(--font-heading)] bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
+              <span className="text-xl font-bold font-heading bg-linear-to-r from-primary to-accent bg-clip-text text-transparent">
                 Kulinarya
               </span>
             </Link>

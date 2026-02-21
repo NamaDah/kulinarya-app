@@ -26,7 +26,7 @@ export default function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
       <div className="fixed right-0 top-0 z-50 h-full w-full max-w-md bg-white shadow-2xl animate-slide-in-right flex flex-col">
         {/* Header */}
         <div className="flex items-center justify-between p-5 border-b border-border">
-          <h2 className="text-lg font-bold font-[family-name:var(--font-heading)]">
+          <h2 className="text-lg font-bold font-heading">
             Your Cart ({totalItems})
           </h2>
           <button
