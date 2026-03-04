@@ -1,7 +1,12 @@
 "use client";
 
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
 import { useCart } from "@/context/CartContext";
+import { useAuth } from "@/context/AuthContext";
+import { checkout } from "@/lib/order-api";
+import { formatRupiah } from "@/lib/currency";
 
 export default function CartPage() {
   const {
@@ -12,6 +17,46 @@ export default function CartPage() {
     totalItems,
     totalPrice,
   } = useCart();
+  const { user, openAuthModal } = useAuth();
+  const router = useRouter();
+  const [isCheckingOut, setIsCheckingOut] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  const handleCheckout = async () => {
+    if (!user) {
+      openAuthModal();
+      return;
+    }
+
+    setIsCheckingOut(true);
+    setError(null);
+
+    try {
+      const checkoutItems = items.map((item) => ({
+        product_id: item.product.id,
+        quantity: item.quantity,
+      }));
+
+      const response = await checkout(checkoutItems);
+      clearCart();
+
+      // If we got a redirect URL from Midtrans, open it
+      if (response.order.redirect_url) {
+        window.open(response.order.redirect_url, "_blank");
+      }
+
+      // Navigate to the order detail page
+      router.push(`/orders/${response.order.id}`);
+    } catch (err) {
+      setError(
+        err instanceof Error
+          ? err.message
+          : "Checkout failed. Please try again.",
+      );
+    } finally {
+      setIsCheckingOut(false);
+    }
+  };
 
   if (items.length === 0) {
     return (
@@ -57,6 +102,23 @@ export default function CartPage() {
           Clear all
         </button>
       </div>
+
+      {/* Error */}
+      {error && (
+        <div
+          style={{
+            background: "#fef2f2",
+            color: "#dc2626",
+            padding: "0.75rem 1rem",
+            borderRadius: "0.75rem",
+            fontSize: "0.875rem",
+            marginBottom: "1rem",
+            border: "1px solid #fecaca",
+          }}
+        >
+          {error}
+        </div>
+      )}
 
       {/* Items */}
       <div className="space-y-4 mb-8">
@@ -136,14 +198,13 @@ export default function CartPage() {
                 {/* Price */}
                 <div className="text-right">
                   <span className="text-lg font-bold text-primary">
-                    $
-                    {(parseFloat(item.product.price) * item.quantity).toFixed(
-                      2,
+                    {formatRupiah(
+                      parseFloat(item.product.price) * item.quantity,
                     )}
                   </span>
                   {item.quantity > 1 && (
                     <span className="text-xs text-muted block">
-                      ${parseFloat(item.product.price).toFixed(2)} each
+                      {formatRupiah(item.product.price)} each
                     </span>
                   )}
                 </div>
@@ -162,7 +223,7 @@ export default function CartPage() {
         <div className="space-y-2 mb-4">
           <div className="flex justify-between text-sm">
             <span className="text-muted">Subtotal ({totalItems} items)</span>
-            <span className="font-medium">${totalPrice.toFixed(2)}</span>
+            <span className="font-medium">{formatRupiah(totalPrice)}</span>
           </div>
           <div className="flex justify-between text-sm">
             <span className="text-muted">Shipping</span>
@@ -173,12 +234,43 @@ export default function CartPage() {
         <div className="border-t border-border pt-4 flex justify-between items-center mb-6">
           <span className="font-semibold text-lg">Total</span>
           <span className="text-2xl font-bold text-primary">
-            ${totalPrice.toFixed(2)}
+            {formatRupiah(totalPrice)}
           </span>
         </div>
 
-        <button className="btn-buy-all text-lg py-4" disabled>
-          Proceed to Checkout (Coming Soon)
+        <button
+          className="btn-buy-all text-lg py-4"
+          onClick={handleCheckout}
+          disabled={isCheckingOut}
+          style={{ opacity: isCheckingOut ? 0.7 : 1 }}
+        >
+          {isCheckingOut ? (
+            <span
+              style={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                gap: "0.5rem",
+              }}
+            >
+              <span
+                style={{
+                  width: 18,
+                  height: 18,
+                  border: "2px solid rgba(255,255,255,0.3)",
+                  borderTopColor: "#fff",
+                  borderRadius: "50%",
+                  display: "inline-block",
+                  animation: "spin 0.8s linear infinite",
+                }}
+              />
+              Processing...
+            </span>
+          ) : user ? (
+            "Proceed to Checkout"
+          ) : (
+            "Login to Checkout"
+          )}
         </button>
 
         <Link
@@ -188,6 +280,12 @@ export default function CartPage() {
           ← Continue Shopping
         </Link>
       </div>
+
+      <style>{`
+        @keyframes spin {
+          to { transform: rotate(360deg); }
+        }
+      `}</style>
     </div>
   );
 }
