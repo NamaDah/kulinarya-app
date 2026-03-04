@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import { Product } from "@/lib/types";
+import { formatRupiah } from "@/lib/currency";
 import { useCart } from "@/context/CartContext";
 import { useAuth } from "@/context/AuthContext";
 
@@ -62,7 +63,7 @@ export default function ProductCard({ product }: ProductCardProps) {
         <div className="flex items-center justify-between">
           <div>
             <span className="text-xl font-bold text-primary">
-              ${parseFloat(product.price).toFixed(2)}
+              {formatRupiah(product.price)}
             </span>
             <span className="text-xs text-muted ml-1">/ {product.unit}</span>
           </div>

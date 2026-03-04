@@ -6,6 +6,7 @@ import Link from "next/link";
 import { Recipe, Product } from "@/lib/types";
 import { getRecipe } from "@/lib/api";
 import { useCart } from "@/context/CartContext";
+import { formatRupiah } from "@/lib/currency";
 import { useAuth } from "@/context/AuthContext";
 
 export default function RecipeDetailPage({
@@ -216,7 +217,7 @@ export default function RecipeDetailPage({
               {ingredient.product && (
                 <div className="flex items-center gap-3">
                   <span className="text-sm text-primary font-semibold hidden sm:inline">
-                    ${parseFloat(ingredient.product.price).toFixed(2)}
+                    {formatRupiah(ingredient.product.price)}
                   </span>
                   <button
                     id={`buy-ingredient-${ingredient.id}`}

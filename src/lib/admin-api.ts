@@ -1,4 +1,4 @@
-import { Category } from "./types";
+import { Category, DashboardStats, User } from "./types";
 import {
   AdminProduct,
   PaginatedResponse,
@@ -104,4 +104,62 @@ export async function deleteProduct(id: number): Promise<void> {
 
 export async function getAdminCategories(): Promise<Category[]> {
   return adminFetch<Category[]>("/categories");
+}
+
+export async function getAdminDashboard(): Promise<{
+  stats: DashboardStats;
+  recent_orders: any[];
+}> {
+  return adminFetch<{ stats: DashboardStats; recent_orders: any[] }>(
+    "/admin/dashboard",
+  );
+}
+
+export async function getAdminUsers(
+  page = 1,
+): Promise<PaginatedResponse<User>> {
+  return adminFetch<PaginatedResponse<User>>(`/admin/users?page=${page}`);
+}
+
+export async function updateUserRole(
+  id: number,
+  role: "admin" | "user",
+): Promise<{ message: string; user: User }> {
+  return adminFetch<{ message: string; user: User }>(
+    `/admin/users/${id}/role`,
+    {
+      method: "PATCH",
+      body: JSON.stringify({ role }),
+    },
+  );
+}
+
+export async function deleteUser(id: number): Promise<{ message: string }> {
+  return adminFetch<{ message: string }>(`/admin/users/${id}`, {
+    method: "DELETE",
+  });
+}
+
+export async function updateAdminProfile(data: {
+  name: string;
+  email: string;
+}): Promise<{ message: string; user: User }> {
+  return adminFetch<{ message: string; user: User }>(
+    "/admin/settings/profile",
+    {
+      method: "PUT",
+      body: JSON.stringify(data),
+    },
+  );
+}
+
+export async function updateAdminPassword(data: {
+  current_password: string;
+  password: string;
+  password_confirmation: string;
+}): Promise<{ message: string }> {
+  return adminFetch<{ message: string }>("/admin/settings/password", {
+    method: "PUT",
+    body: JSON.stringify(data),
+  });
 }

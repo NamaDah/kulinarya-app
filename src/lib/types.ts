@@ -56,3 +56,55 @@ export interface CartItem {
   product: Product;
   quantity: number;
 }
+
+export interface OrderItem {
+  id: number;
+  product_id: number;
+  product_name: string;
+  product_image?: string | null;
+  quantity: number;
+  unit_price: string;
+}
+
+export interface Order {
+  id: number;
+  status: "pending" | "processing" | "completed" | "cancelled";
+  payment_status: "unpaid" | "paid" | "expired" | "failed";
+  payment_reference: string | null;
+  snap_token: string | null;
+  total_amount: string;
+  items: OrderItem[];
+  redirect_url?: string;
+  created_at: string;
+  updated_at?: string;
+}
+
+export interface AdminOrder extends Order {
+  user?: {
+    id: number;
+    name: string;
+    email: string;
+  } | null;
+}
+
+export interface User {
+  id: number;
+  name: string;
+  email: string;
+  role: "admin" | "user";
+  created_at: string;
+}
+
+export interface DashboardStats {
+  total_revenue: number;
+  total_orders: number;
+  total_users: number;
+}
+
+export interface PaginatedResponse<T> {
+  data: T[];
+  current_page: number;
+  last_page: number;
+  per_page: number;
+  total: number;
+}

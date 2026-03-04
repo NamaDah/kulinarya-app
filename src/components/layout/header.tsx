@@ -51,6 +51,14 @@ export default function Header() {
               >
                 Recipes
               </Link>
+              {user && (
+                <Link
+                  href="/orders"
+                  className="text-sm font-medium text-muted hover:text-primary transition-colors"
+                >
+                  My Orders
+                </Link>
+              )}
             </nav>
 
             {/* Right: Auth + Cart + Mobile Menu */}
@@ -217,6 +225,15 @@ export default function Header() {
               >
                 Recipes
               </Link>
+              {user && (
+                <Link
+                  href="/orders"
+                  className="text-sm font-medium text-muted hover:text-primary"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                >
+                  My Orders
+                </Link>
+              )}
             </nav>
           )}
         </div>
