@@ -1,6 +1,7 @@
 "use client";
 
 import { useCart } from "@/context/CartContext";
+import { formatRupiah } from "@/lib/currency";
 import Link from "next/link";
 
 interface CartDrawerProps {
@@ -78,7 +79,7 @@ export default function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
                       {item.product.name}
                     </h4>
                     <p className="text-primary font-semibold text-sm mt-0.5">
-                      ${parseFloat(item.product.price).toFixed(2)}
+                      {formatRupiah(item.product.price)}
                     </p>
 
                     {/* Quantity controls */}
@@ -138,7 +139,7 @@ export default function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
             <div className="flex justify-between mb-4">
               <span className="text-muted">Total</span>
               <span className="text-xl font-bold text-primary">
-                ${totalPrice.toFixed(2)}
+                {formatRupiah(totalPrice)}
               </span>
             </div>
             <Link

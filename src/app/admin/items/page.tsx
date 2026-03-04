@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useCallback } from "react";
 import { Category } from "@/lib/types";
+import { formatRupiah } from "@/lib/currency";
 import {
   AdminProduct,
   PaginatedResponse,
@@ -501,7 +502,7 @@ export default function AdminItemsPage() {
                     {/* Price */}
                     <td>
                       <span style={{ fontWeight: 600, color: "#0f172a" }}>
-                        ${Number(product.price).toFixed(2)}
+                        {formatRupiah(product.price)}
                       </span>
                     </td>
 

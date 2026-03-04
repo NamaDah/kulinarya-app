@@ -2,6 +2,7 @@
 
 import { useEffect, useCallback } from "react";
 import { AdminProduct } from "@/lib/admin-types";
+import { formatRupiah } from "@/lib/currency";
 
 interface ItemDetailModalProps {
   isOpen: boolean;
@@ -182,10 +183,7 @@ export default function ItemDetailModal({
               label="Category"
               value={product.category?.name || "—"}
             />
-            <DetailItem
-              label="Price"
-              value={`$${Number(product.price).toFixed(2)}`}
-            />
+            <DetailItem label="Price" value={formatRupiah(product.price)} />
             <DetailItem label="Unit" value={product.unit} />
             <DetailItem label="Slug" value={product.slug} />
             <DetailItem
