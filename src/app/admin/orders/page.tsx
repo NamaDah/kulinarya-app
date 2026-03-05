@@ -8,7 +8,7 @@ import { AdminOrder } from "@/lib/types";
 const statusColors: Record<string, { bg: string; color: string }> = {
   pending: { bg: "#fef3c7", color: "#92400e" },
   processing: { bg: "#dbeafe", color: "#1e40af" },
-  completed: { bg: "#dcfce7", color: "#166534" },
+  confirmed: { bg: "#dcfce7", color: "#166534" },
   cancelled: { bg: "#fee2e2", color: "#991b1b" },
 };
 
@@ -123,7 +123,9 @@ export default function AdminOrdersPage() {
           <option value="">All Statuses</option>
           <option value="pending">Pending</option>
           <option value="processing">Processing</option>
-          <option value="completed">Completed</option>
+          <option value="confirmed">Confirmed</option>
+          <option value="shipped">Shipped</option>
+          <option value="delivered">Delivered</option>
           <option value="cancelled">Cancelled</option>
         </select>
       </div>
@@ -256,7 +258,9 @@ export default function AdminOrdersPage() {
                         >
                           <option value="pending">Pending</option>
                           <option value="processing">Processing</option>
-                          <option value="completed">Completed</option>
+                          <option value="confirmed">Confirmed</option>
+                          <option value="shipped">Shipped</option>
+                          <option value="delivered">Delivered</option>
                           <option value="cancelled">Cancelled</option>
                         </select>
                       </td>
@@ -314,7 +318,7 @@ export default function AdminOrdersPage() {
                                   >
                                     {formatRupiah(
                                       item.quantity *
-                                        parseFloat(item.unit_price),
+                                      parseFloat(item.unit_price),
                                     )}
                                   </span>
                                 </div>

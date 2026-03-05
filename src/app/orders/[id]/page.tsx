@@ -14,7 +14,7 @@ const statusConfig: Record<
 > = {
   pending: { bg: "#fef3c7", color: "#92400e", icon: "⏳" },
   processing: { bg: "#dbeafe", color: "#1e40af", icon: "⚙️" },
-  completed: { bg: "#dcfce7", color: "#166534", icon: "✅" },
+  confirmed: { bg: "#dcfce7", color: "#166534", icon: "✅" },
   cancelled: { bg: "#fee2e2", color: "#991b1b", icon: "❌" },
 };
 
