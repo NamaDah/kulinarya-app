@@ -6,20 +6,7 @@ import { useAuth } from "@/context/AuthContext";
 import { getOrders } from "@/lib/order-api";
 import { formatRupiah } from "@/lib/currency";
 import { Order } from "@/lib/types";
-
-const statusColors: Record<string, { bg: string; color: string }> = {
-  pending: { bg: "#fef3c7", color: "#92400e" },
-  processing: { bg: "#dbeafe", color: "#1e40af" },
-  confirmed: { bg: "#dcfce7", color: "#166534" },
-  cancelled: { bg: "#fee2e2", color: "#991b1b" },
-};
-
-const paymentColors: Record<string, { bg: string; color: string }> = {
-  unpaid: { bg: "#fef3c7", color: "#92400e" },
-  paid: { bg: "#dcfce7", color: "#166534" },
-  expired: { bg: "#f3f4f6", color: "#6b7280" },
-  failed: { bg: "#fee2e2", color: "#991b1b" },
-};
+import { paymentColors, statusColors } from "@/constants/statusColors";
 
 export default function OrdersPage() {
   const { user, loading: authLoading, openAuthModal } = useAuth();
@@ -120,7 +107,7 @@ export default function OrdersPage() {
           <p className="text-muted mb-6">
             Start shopping and your orders will appear here!
           </p>
-          <Link href="/shop" className="btn-buy-all !w-auto !px-10">
+          <Link href="/shop" className="btn-buy-all w-auto! px-10!">
             Browse Shop
           </Link>
         </div>

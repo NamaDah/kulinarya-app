@@ -5,20 +5,7 @@ import { getAdminDashboard } from "@/lib/admin-api";
 import { DashboardStats, AdminOrder } from "@/lib/types";
 import { formatRupiah } from "@/lib/currency";
 import Link from "next/link";
-
-const statusColors: Record<string, { bg: string; color: string }> = {
-  pending: { bg: "#fef3c7", color: "#92400e" },
-  processing: { bg: "#dbeafe", color: "#1e40af" },
-  confirmed: { bg: "#dcfce7", color: "#166534" },
-  cancelled: { bg: "#fee2e2", color: "#991b1b" },
-};
-
-const paymentColors: Record<string, { bg: string; color: string }> = {
-  unpaid: { bg: "#fef3c7", color: "#92400e" },
-  paid: { bg: "#dcfce7", color: "#166534" },
-  expired: { bg: "#f3f4f6", color: "#6b7280" },
-  failed: { bg: "#fee2e2", color: "#991b1b" },
-};
+import { paymentColors, statusColors } from "@/constants/statusColors";
 
 export default function AdminDashboardPage() {
   const [stats, setStats] = useState<DashboardStats | null>(null);

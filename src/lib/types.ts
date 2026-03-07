@@ -68,7 +68,7 @@ export interface OrderItem {
 
 export interface Order {
   id: number;
-  status: "pending" | "confirmed" | "shipped" | "delivered" | "cancelled";
+  status: "pending" | "confirmed" | "processing" | "cancelled";
   payment_status: "unpaid" | "paid" | "expired" | "failed";
   payment_reference: string | null;
   snap_token: string | null;
