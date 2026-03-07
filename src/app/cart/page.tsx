@@ -21,6 +21,7 @@ export default function CartPage() {
   const router = useRouter();
   const [isCheckingOut, setIsCheckingOut] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [address, setAddress] = useState("");
 
   const handleCheckout = async () => {
     if (!user) {
@@ -37,7 +38,7 @@ export default function CartPage() {
         quantity: item.quantity,
       }));
 
-      const response = await checkout(checkoutItems);
+      const response = await checkout(checkoutItems, address);
       clearCart();
 
       // If we got a redirect URL from Midtrans, open it
@@ -214,11 +215,68 @@ export default function CartPage() {
         ))}
       </div>
 
+      <div className="glass-card p-6 space-y-4 mb-8">
+        <div className="flex items-center gap-2 mb-4">
+          <svg
+            className="w-5 h-5 text-primary"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+            strokeWidth={2}
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.242-4.243a8 8 0 1111.314 0z"
+            />
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
+            />
+          </svg>
+          <h3 className="font-bold font-heading text-lg">Delivery Address</h3>
+        </div>
+
+        <div className="space-y-3">
+          <label
+            htmlFor="address"
+            className="block text-sm font-medium text-muted"
+          >
+            Where should we send your order?
+          </label>
+          <div className="relative">
+            <textarea
+              id="address"
+              value={address}
+              onChange={(e) => setAddress(e.target.value)}
+              placeholder="e.g. 123 Food Street, Apartment 4B, Food City..."
+              rows={3}
+              className="w-full bg-surface-warm border border-border rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all resize-none placeholder:text-muted/70"
+            />
+          </div>
+          <p className="text-xs text-muted flex items-center gap-1.5">
+            <svg
+              className="w-4 h-4 text-secondary"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              strokeWidth={2}
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+              />
+            </svg>
+            Make sure your address is complete to ensure smooth delivery.
+          </p>
+        </div>
+      </div>
+
       {/* Summary */}
       <div className="glass-card p-6">
-        <h3 className="font-bold font-[family-name:var(--font-heading)] text-lg mb-4">
-          Order Summary
-        </h3>
+        <h3 className="font-bold font-heading text-lg mb-4">Order Summary</h3>
 
         <div className="space-y-2 mb-4">
           <div className="flex justify-between text-sm">
@@ -241,8 +299,10 @@ export default function CartPage() {
         <button
           className="btn-buy-all text-lg py-4"
           onClick={handleCheckout}
-          disabled={isCheckingOut}
-          style={{ opacity: isCheckingOut ? 0.7 : 1 }}
+          disabled={isCheckingOut || (user && !address.trim() ? true : false)}
+          style={{
+            opacity: isCheckingOut || (user && !address.trim()) ? 0.7 : 1,
+          }}
         >
           {isCheckingOut ? (
             <span

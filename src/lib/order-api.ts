@@ -31,6 +31,7 @@ interface CheckoutResponse {
  */
 export async function checkout(
   items: CheckoutItem[],
+  address: string,
 ): Promise<CheckoutResponse> {
   const res = await fetch("/api/checkout", {
     method: "POST",
@@ -40,8 +41,10 @@ export async function checkout(
       "X-XSRF-TOKEN": getXsrfToken(),
     },
     credentials: "include",
-    body: JSON.stringify({ items }),
+    body: JSON.stringify({ items, address }),
   });
+
+  console.log(JSON.stringify({ items, address }))
 
   if (!res.ok) {
     const err = await res.json();

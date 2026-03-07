@@ -75,6 +75,7 @@ export interface Order {
   total_amount: string;
   items: OrderItem[];
   redirect_url?: string;
+  address: string;
   created_at: string;
   updated_at?: string;
 }

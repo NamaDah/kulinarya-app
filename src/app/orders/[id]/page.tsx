@@ -278,6 +278,38 @@ export default function OrderDetailPage() {
         </div>
       )}
 
+      {/* Address */}
+      {order.address && (
+        <div
+          className="glass-card"
+          style={{
+            padding: "1rem 1.25rem",
+            marginBottom: "1.5rem",
+            cursor: "default",
+          }}
+        >
+          <div
+            style={{
+              fontSize: "0.75rem",
+              color: "#78716c",
+              fontWeight: 500,
+              marginBottom: "0.5rem",
+            }}
+          >
+            Delivery Address
+          </div>
+          <div
+            style={{
+              fontSize: "0.9rem",
+              lineHeight: 1.5,
+              whiteSpace: "pre-wrap",
+            }}
+          >
+            {order.address}
+          </div>
+        </div>
+      )}
+
       {/* Order Items */}
       <div
         className="glass-card"
