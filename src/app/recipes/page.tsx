@@ -5,8 +5,10 @@ import { Recipe } from "@/lib/types";
 import { getRecipes } from "@/lib/api";
 import RecipeCard from "@/components/ui/RecipeCard";
 import CuisineTabs from "@/components/ui/CuisineTabs";
+import { useLanguage } from "@/context/LanguageContext";
 
 export default function RecipesPage() {
+  const { t } = useLanguage();
   const [activeTab, setActiveTab] = useState("all");
   const [recipes, setRecipes] = useState<Recipe[]>([]);
   const [loading, setLoading] = useState(true);
@@ -34,10 +36,10 @@ export default function RecipesPage() {
       {/* Header */}
       <div className="mb-8">
         <h1 className="text-3xl md:text-4xl font-bold font-[family-name:var(--font-heading)] mb-2">
-          Recipes
+          {t("recipes.title")}
         </h1>
         <p className="text-muted text-lg">
-          Authentic Pan-Asian recipes to master at home
+          {t("recipes.subtitle")}
         </p>
       </div>
 
@@ -61,8 +63,8 @@ export default function RecipesPage() {
       ) : recipes.length === 0 ? (
         <div className="text-center py-20">
           <span className="text-5xl block mb-4">📖</span>
-          <p className="text-muted text-xl">No recipes found</p>
-          <p className="text-sm text-muted mt-1">Try a different cuisine tab</p>
+          <p className="text-muted text-xl">{t("recipes.noRecipes")}</p>
+          <p className="text-sm text-muted mt-1">{t("recipes.tryDifferentTab")}</p>
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">

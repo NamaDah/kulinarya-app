@@ -8,6 +8,7 @@ import { getRecipe } from "@/lib/api";
 import { useCart } from "@/context/CartContext";
 import { formatRupiah } from "@/lib/currency";
 import { useAuth } from "@/context/AuthContext";
+import { useLanguage } from "@/context/LanguageContext";
 
 export default function RecipeDetailPage({
   params,
@@ -15,6 +16,7 @@ export default function RecipeDetailPage({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = use(params);
+  const { t } = useLanguage();
   const [recipe, setRecipe] = useState<Recipe | null>(null);
   const [loading, setLoading] = useState(true);
   const [addedItems, setAddedItems] = useState<Set<number>>(new Set());
@@ -92,12 +94,12 @@ export default function RecipeDetailPage({
     return (
       <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-20 text-center">
         <span className="text-5xl block mb-4">😢</span>
-        <p className="text-xl text-muted">Recipe not found</p>
+        <p className="text-xl text-muted">{t("recipeDetail.recipeNotFound")}</p>
         <Link
           href="/recipes"
           className="text-primary font-medium hover:underline mt-4 inline-block"
         >
-          ← Back to recipes
+          {t("recipeDetail.backToRecipes")}
         </Link>
       </div>
     );
@@ -108,7 +110,7 @@ export default function RecipeDetailPage({
       {/* Breadcrumb */}
       <nav className="flex items-center gap-2 text-sm text-muted mb-6">
         <Link href="/recipes" className="hover:text-primary transition-colors">
-          Recipes
+          {t("recipes.title")}
         </Link>
         <span>/</span>
         <span
@@ -129,16 +131,16 @@ export default function RecipeDetailPage({
       {/* Meta */}
       <div className="flex flex-wrap gap-4 text-sm text-muted mb-8">
         <span className="flex items-center gap-1.5 bg-surface-warm px-3 py-1.5 rounded-full">
-          ⏱️ Prep: {recipe.prep_time_minutes} min
+          ⏱️ {t("recipeDetail.prep")} {recipe.prep_time_minutes} {t("recipeDetail.min")}
         </span>
         <span className="flex items-center gap-1.5 bg-surface-warm px-3 py-1.5 rounded-full">
-          🔥 Cook:{" "}
+          🔥 {t("recipeDetail.cook")}{" "}
           {recipe.cook_time_minutes > 60
             ? `${Math.floor(recipe.cook_time_minutes / 60)}h ${recipe.cook_time_minutes % 60}m`
-            : `${recipe.cook_time_minutes} min`}
+            : `${recipe.cook_time_minutes} ${t("recipeDetail.min")}`}
         </span>
         <span className="flex items-center gap-1.5 bg-surface-warm px-3 py-1.5 rounded-full">
-          👨‍🍳 {recipe.servings} servings
+          👨‍🍳 {recipe.servings} {t("recipeDetail.servings")}
         </span>
       </div>
 
@@ -183,10 +185,10 @@ export default function RecipeDetailPage({
       {/* ── Ingredient List ── */}
       <div className="mb-10">
         <div className="flex items-center justify-between mb-6">
-          <h2 className="text-2xl font-bold font-heading">Ingredients</h2>
+          <h2 className="text-2xl font-bold font-heading">{t("recipeDetail.ingredients")}</h2>
           {purchasableCount > 0 && (
             <span className="text-sm text-muted">
-              🛒 {purchasableCount} available to buy
+              🛒 {purchasableCount} {t("recipeDetail.availableToBuy")}
             </span>
           )}
         </div>
@@ -231,8 +233,8 @@ export default function RecipeDetailPage({
                     }`}
                   >
                     {addedItems.has(ingredient.product.id)
-                      ? "✓ Added!"
-                      : "Buy this"}
+                      ? t("recipeDetail.added")
+                      : t("recipeDetail.buyThis")}
                   </button>
                 </div>
               )}
@@ -252,12 +254,12 @@ export default function RecipeDetailPage({
             }`}
           >
             {allAdded ? (
-              <>✓ All Ingredients Added to Cart!</>
+              <>{t("recipeDetail.allAdded")}</>
             ) : (
               <>
-                🛒 Buy All Ingredients
+                🛒 {t("recipeDetail.buyAllIngredients")}
                 <span className="text-white/70 text-sm">
-                  ({purchasableCount} items)
+                  ({purchasableCount} {t("recipeDetail.items")})
                 </span>
               </>
             )}

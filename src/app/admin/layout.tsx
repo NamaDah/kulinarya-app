@@ -4,112 +4,48 @@ import { useState } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
+import { useLanguage } from "@/context/LanguageContext";
 
-const navItems = [
-  {
-    label: "Dashboard",
-    href: "/admin",
-    icon: (
-      <svg
-        width="20"
-        height="20"
-        viewBox="0 0 24 24"
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="2"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      >
-        <rect x="3" y="3" width="7" height="9" rx="1" />
-        <rect x="14" y="3" width="7" height="5" rx="1" />
-        <rect x="14" y="12" width="7" height="9" rx="1" />
-        <rect x="3" y="16" width="7" height="5" rx="1" />
-      </svg>
-    ),
-  },
-  {
-    label: "Orders",
-    href: "/admin/orders",
-    icon: (
-      <svg
-        width="20"
-        height="20"
-        viewBox="0 0 24 24"
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="2"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      >
-        <path d="M16 3h5v5" />
-        <path d="M8 3H3v5" />
-        <path d="M12 22v-8.3a4 4 0 0 0-1.172-2.872L3 3" />
-        <path d="m15 9 6-6" />
-      </svg>
-    ),
-  },
-  {
-    label: "Users",
-    href: "/admin/users",
-    icon: (
-      <svg
-        width="20"
-        height="20"
-        viewBox="0 0 24 24"
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="2"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      >
-        <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
-        <circle cx="9" cy="7" r="4" />
-        <path d="M22 21v-2a4 4 0 0 0-3-3.87" />
-        <path d="M16 3.13a4 4 0 0 1 0 7.75" />
-      </svg>
-    ),
-  },
-  {
-    label: "Items",
-    href: "/admin/items",
-    icon: (
-      <svg
-        width="20"
-        height="20"
-        viewBox="0 0 24 24"
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="2"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      >
-        <path d="m7.5 4.27 9 5.15" />
-        <path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z" />
-        <path d="m3.3 7 8.7 5 8.7-5" />
-        <path d="M12 22V12" />
-      </svg>
-    ),
-  },
-  {
-    label: "Settings",
-    href: "/admin/settings",
-    icon: (
-      <svg
-        width="20"
-        height="20"
-        viewBox="0 0 24 24"
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="2"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      >
-        <path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z" />
-        <circle cx="12" cy="12" r="3" />
-      </svg>
-    ),
-  },
-];
+const navIcons = {
+  dashboard: (
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <rect x="3" y="3" width="7" height="9" rx="1" />
+      <rect x="14" y="3" width="7" height="5" rx="1" />
+      <rect x="14" y="12" width="7" height="9" rx="1" />
+      <rect x="3" y="16" width="7" height="5" rx="1" />
+    </svg>
+  ),
+  orders: (
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M16 3h5v5" />
+      <path d="M8 3H3v5" />
+      <path d="M12 22v-8.3a4 4 0 0 0-1.172-2.872L3 3" />
+      <path d="m15 9 6-6" />
+    </svg>
+  ),
+  users: (
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
+      <circle cx="9" cy="7" r="4" />
+      <path d="M22 21v-2a4 4 0 0 0-3-3.87" />
+      <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+    </svg>
+  ),
+  items: (
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="m7.5 4.27 9 5.15" />
+      <path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z" />
+      <path d="m3.3 7 8.7 5 8.7-5" />
+      <path d="M12 22V12" />
+    </svg>
+  ),
+  settings: (
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z" />
+      <circle cx="12" cy="12" r="3" />
+    </svg>
+  ),
+};
 
 export default function AdminLayout({
   children,
@@ -119,7 +55,16 @@ export default function AdminLayout({
   const pathname = usePathname();
   const router = useRouter();
   const { user, loading, logout } = useAuth();
+  const { t, locale, setLocale } = useLanguage();
   const [sidebarOpen, setSidebarOpen] = useState(false);
+
+  const navItems = [
+    { label: t("admin.dashboard"), href: "/admin", icon: navIcons.dashboard },
+    { label: t("admin.orders"), href: "/admin/orders", icon: navIcons.orders },
+    { label: t("admin.users"), href: "/admin/users", icon: navIcons.users },
+    { label: t("admin.items"), href: "/admin/items", icon: navIcons.items },
+    { label: t("admin.settings"), href: "/admin/settings", icon: navIcons.settings },
+  ];
 
   // Allow login page to render without auth
   const isLoginPage = pathname === "/admin/login";
@@ -149,7 +94,7 @@ export default function AdminLayout({
               margin: "0 auto 1rem",
             }}
           />
-          <p style={{ color: "#64748b", fontSize: "0.875rem" }}>Loading...</p>
+          <p style={{ color: "#64748b", fontSize: "0.875rem" }}>{t("admin.loading")}</p>
         </div>
       </div>
     );
@@ -241,7 +186,7 @@ export default function AdminLayout({
                   textTransform: "uppercase" as const,
                 }}
               >
-                Admin Panel
+                {t("admin.panel")}
               </div>
             </div>
           </div>
@@ -258,7 +203,7 @@ export default function AdminLayout({
               paddingLeft: "0.25rem",
             }}
           >
-            Menu
+            {t("admin.menu")}
           </div>
           <nav
             style={{
@@ -285,6 +230,31 @@ export default function AdminLayout({
               );
             })}
           </nav>
+
+          {/* Language Switcher */}
+          <div style={{ marginTop: "2rem", paddingLeft: "0.25rem" }}>
+            <button
+              onClick={() => setLocale(locale === "en" ? "id" : "en")}
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: "0.5rem",
+                padding: "0.5rem 0.75rem",
+                borderRadius: "0.5rem",
+                border: "1px solid #334155",
+                background: "transparent",
+                color: "#94a3b8",
+                fontSize: "0.8rem",
+                fontWeight: 500,
+                cursor: "pointer",
+                transition: "all 0.2s ease",
+                width: "100%",
+              }}
+            >
+              <span>{locale === "en" ? "🇬🇧" : "🇮🇩"}</span>
+              <span>{locale === "en" ? "English" : "Indonesia"}</span>
+            </button>
+          </div>
         </div>
       </aside>
 
@@ -370,7 +340,7 @@ export default function AdminLayout({
               </svg>
               <input
                 type="text"
-                placeholder="Search anything..."
+                placeholder={t("admin.searchPlaceholder")}
                 className="admin-search-input"
                 readOnly
               />
@@ -381,6 +351,51 @@ export default function AdminLayout({
           <div
             style={{ display: "flex", alignItems: "center", gap: "0.75rem" }}
           >
+            {/* Go to Shop Button */}
+            <Link
+              href="/shop"
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: "0.5rem",
+                background: "linear-gradient(135deg, #d97706, #ea580c)",
+                color: "#fff",
+                border: "none",
+                borderRadius: "0.625rem",
+                padding: "0.5rem 1rem",
+                fontSize: "0.8rem",
+                fontWeight: 600,
+                cursor: "pointer",
+                transition: "all 0.2s ease",
+                textDecoration: "none",
+                whiteSpace: "nowrap" as const,
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.opacity = "0.9";
+                e.currentTarget.style.transform = "translateY(-1px)";
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.opacity = "1";
+                e.currentTarget.style.transform = "translateY(0)";
+              }}
+            >
+              <svg
+                width="16"
+                height="16"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
+                <path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z" />
+                <path d="M3 6h18" />
+                <path d="M16 10a4 4 0 0 1-8 0" />
+              </svg>
+              {t("admin.goToShop")}
+            </Link>
+
             {/* Notification Bell */}
             <button
               style={{
@@ -472,7 +487,7 @@ export default function AdminLayout({
               </div>
               <button
                 onClick={handleLogout}
-                title="Logout"
+                title={t("nav.signOut")}
                 style={{
                   background: "none",
                   border: "none",

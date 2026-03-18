@@ -43,4 +43,11 @@ export interface ProductFilters {
   per_page?: number;
 }
 
+export interface UserFilters {
+  search?: string;
+  email?: string;
+  page?: number;
+  per_page?: number;
+}
+
 export type FormErrors = Partial<Record<keyof ProductFormData, string>>;

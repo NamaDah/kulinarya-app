@@ -1,35 +1,44 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { getAdminUsers, updateUserRole, deleteUser } from "@/lib/admin-api";
 import { User } from "@/lib/types";
+import { useLanguage } from "@/context/LanguageContext";
 
 export default function AdminUsersPage() {
-  const [users, setUsers] = useState<User[]>([]);
+  const [allUsers, setAllUsers] = useState<User[]>([]);
   const [loading, setLoading] = useState(true);
-  const [page, setPage] = useState(1);
-  const [lastPage, setLastPage] = useState(1);
-  const [total, setTotal] = useState(0);
   const [processingId, setProcessingId] = useState<number | null>(null);
+  const [searchInput, setSearchInput] = useState("");
+  const { t, locale } = useLanguage();
 
+  // Fetch all users once
   const fetchUsers = async () => {
     setLoading(true);
     try {
-      const res = await getAdminUsers(page);
-      setUsers(res.data);
-      setLastPage(res.last_page);
-      setTotal(res.total);
+      const res = await getAdminUsers({ per_page: 1000 });
+      setAllUsers(res.data);
     } catch (err) {
       console.error("Failed to fetch users", err);
-      setUsers([]);
+      setAllUsers([]);
     }
     setLoading(false);
   };
 
   useEffect(() => {
     fetchUsers();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [page]);
+  }, []);
+
+  // Client-side filtering
+  const filteredUsers = useMemo(() => {
+    if (!searchInput.trim()) return allUsers;
+    const query = searchInput.toLowerCase();
+    return allUsers.filter(
+      (user) =>
+        user.name.toLowerCase().includes(query) ||
+        user.email.toLowerCase().includes(query)
+    );
+  }, [allUsers, searchInput]);
 
   const handleRoleChange = async (
     userId: number,
@@ -38,11 +47,11 @@ export default function AdminUsersPage() {
     setProcessingId(userId);
     try {
       await updateUserRole(userId, newRole);
-      setUsers((prev) =>
+      setAllUsers((prev) =>
         prev.map((u) => (u.id === userId ? { ...u, role: newRole } : u)),
       );
     } catch (err: any) {
-      alert(err.message || "Failed to update role");
+      alert(err.message || t("admin.failedToUpdateRole"));
     }
     setProcessingId(null);
   };
@@ -50,7 +59,7 @@ export default function AdminUsersPage() {
   const handleDelete = async (userId: number, userName: string) => {
     if (
       !confirm(
-        `Are you sure you want to delete the user "${userName}"? This cannot be undone.`,
+        t("admin.deleteUserConfirm").replace("{name}", userName),
       )
     ) {
       return;
@@ -59,11 +68,9 @@ export default function AdminUsersPage() {
     setProcessingId(userId);
     try {
       await deleteUser(userId);
-      // reload or filter out
-      setUsers((prev) => prev.filter((u) => u.id !== userId));
-      setTotal((prev) => prev - 1);
+      setAllUsers((prev) => prev.filter((u) => u.id !== userId));
     } catch (err: any) {
-      alert(err.message || "Failed to delete user");
+      alert(err.message || t("admin.failedToDeleteUser"));
     }
     setProcessingId(null);
   };
@@ -79,11 +86,85 @@ export default function AdminUsersPage() {
             color: "#1e293b",
           }}
         >
-          Users Management
+           {t("admin.usersManagement")}
         </h1>
         <p style={{ fontSize: "0.85rem", color: "#64748b" }}>
-          {total} registered user{total !== 1 ? "s" : ""}
+           {searchInput ? `${filteredUsers.length} / ${allUsers.length}` : allUsers.length} {t("admin.registeredUsers")}
         </p>
+      </div>
+
+      <div
+        className="admin-card"
+        style={{
+          padding: "1rem 1.25rem",
+          marginBottom: "1rem",
+          display: "flex",
+          alignItems: "center",
+          gap: "0.75rem",
+          flexWrap: "wrap",
+        }}
+      >
+        <div style={{ position: "relative", flex: "1 1 240px" }}>
+          <svg
+            style={{
+              position: "absolute",
+              left: "0.75rem",
+              top: "50%",
+              transform: "translateY(-50%)",
+              width: "1rem",
+              height: "1rem",
+              color: "#94a3b8",
+            }}
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2.5"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          >
+            <circle cx="11" cy="11" r="8" />
+            <line x1="21" y1="21" x2="16.65" y2="16.65" />
+          </svg>
+          <input
+            type="text"
+             placeholder={t("admin.searchUsersPlaceholder")}
+            value={searchInput}
+            onChange={(e) => setSearchInput(e.target.value)}
+            style={{
+              width: "100%",
+              padding: "0.6rem 0.75rem 0.6rem 2.25rem",
+              borderRadius: "0.5rem",
+              border: "1px solid #e2e8f0",
+              fontSize: "0.875rem",
+              fontFamily: "var(--font-body)",
+              color: "#1e293b",
+              background: "#fff",
+            }}
+          />
+          {searchInput && (
+            <button
+              onClick={() => {
+                setSearchInput("");
+              }}
+              style={{
+                position: "absolute",
+                right: "0.75rem",
+                top: "50%",
+                transform: "translateY(-50%)",
+                background: "none",
+                border: "none",
+                cursor: "pointer",
+                color: "#94a3b8",
+                fontSize: "1.1rem",
+                lineHeight: 1,
+                padding: "0.25rem",
+              }}
+              title="Clear search"
+            >
+              ✕
+            </button>
+          )}
+        </div>
       </div>
 
       <div className="admin-card" style={{ overflow: "hidden" }}>
@@ -101,27 +182,27 @@ export default function AdminUsersPage() {
               }}
             />
             <p style={{ color: "#64748b", fontSize: "0.85rem" }}>
-              Loading users...
+               {t("admin.loadingUsers")}
             </p>
           </div>
-        ) : users.length === 0 ? (
+        ) : filteredUsers.length === 0 ? (
           <div className="empty-state">
             <span style={{ fontSize: "3rem", marginBottom: "1rem" }}>👥</span>
-            <p style={{ fontWeight: 600 }}>No users found</p>
+             <p style={{ fontWeight: 600 }}>{t("admin.noUsersFound")}</p>
           </div>
         ) : (
           <table className="admin-table">
             <thead>
               <tr>
-                <th>Name</th>
-                <th>Email</th>
-                <th>Role</th>
-                <th>Joined</th>
-                <th style={{ textAlign: "right" }}>Actions</th>
+                 <th>{t("admin.name")}</th>
+                 <th>{t("admin.emailCol")}</th>
+                 <th>{t("admin.role")}</th>
+                 <th>{t("admin.joined")}</th>
+                 <th style={{ textAlign: "right" }}>{t("admin.actions")}</th>
               </tr>
             </thead>
             <tbody>
-              {users.map((user) => (
+              {filteredUsers.map((user) => (
                 <tr key={user.id}>
                   <td style={{ fontWeight: 500, color: "#1e293b" }}>
                     {user.name}
@@ -145,7 +226,7 @@ export default function AdminUsersPage() {
                     </span>
                   </td>
                   <td style={{ fontSize: "0.8rem", color: "#64748b" }}>
-                    {new Date(user.created_at).toLocaleDateString("en-US", {
+                     {new Date(user.created_at).toLocaleDateString(locale === "id" ? "id-ID" : "en-US", {
                       month: "short",
                       day: "numeric",
                       year: "numeric",
@@ -176,8 +257,8 @@ export default function AdminUsersPage() {
                           opacity: processingId === user.id ? 0.6 : 1,
                         }}
                       >
-                        <option value="user">User</option>
-                        <option value="admin">Admin</option>
+                         <option value="user">{t("admin.user")}</option>
+                         <option value="admin">{t("admin.admin_role")}</option>
                       </select>
 
                       <button
@@ -225,40 +306,7 @@ export default function AdminUsersPage() {
         )}
       </div>
 
-      {lastPage > 1 && (
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "center",
-            gap: "0.5rem",
-            marginTop: "1.5rem",
-          }}
-        >
-          <button
-            className="pagination-btn"
-            disabled={page <= 1}
-            onClick={() => setPage((p) => p - 1)}
-          >
-            ←
-          </button>
-          {Array.from({ length: lastPage }, (_, i) => i + 1).map((p) => (
-            <button
-              key={p}
-              className={`pagination-btn ${p === page ? "active" : ""}`}
-              onClick={() => setPage(p)}
-            >
-              {p}
-            </button>
-          ))}
-          <button
-            className="pagination-btn"
-            disabled={page >= lastPage}
-            onClick={() => setPage((p) => p + 1)}
-          >
-            →
-          </button>
-        </div>
-      )}
+
 
       <style>{`
         @keyframes spin {

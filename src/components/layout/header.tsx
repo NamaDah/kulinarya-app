@@ -3,12 +3,14 @@
 import Link from "next/link";
 import { useCart } from "@/context/CartContext";
 import { useAuth } from "@/context/AuthContext";
+import { useLanguage } from "@/context/LanguageContext";
 import { useState } from "react";
 import CartDrawer from "@/components/ui/CartDrawer";
 
 export default function Header() {
   const { totalItems } = useCart();
   const { user, logout, openAuthModal } = useAuth();
+  const { locale, setLocale, t } = useLanguage();
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isProfileOpen, setIsProfileOpen] = useState(false);
@@ -37,32 +39,42 @@ export default function Header() {
                 href="/"
                 className="text-sm font-medium text-muted hover:text-primary transition-colors"
               >
-                Home
+                {t("nav.home")}
               </Link>
               <Link
                 href="/shop"
                 className="text-sm font-medium text-muted hover:text-primary transition-colors"
               >
-                Shop
+                {t("nav.shop")}
               </Link>
               <Link
                 href="/recipes"
                 className="text-sm font-medium text-muted hover:text-primary transition-colors"
               >
-                Recipes
+                {t("nav.recipes")}
               </Link>
               {user && (
                 <Link
                   href="/orders"
                   className="text-sm font-medium text-muted hover:text-primary transition-colors"
                 >
-                  My Orders
+                  {t("nav.myOrders")}
                 </Link>
               )}
             </nav>
 
-            {/* Right: Auth + Cart + Mobile Menu */}
+            {/* Right: Lang + Auth + Cart + Mobile Menu */}
             <div className="flex items-center gap-3">
+              {/* Language Switcher */}
+              <button
+                onClick={() => setLocale(locale === "en" ? "id" : "en")}
+                className="flex items-center gap-1 px-2.5 py-1.5 rounded-full bg-surface-warm hover:bg-stone-200 transition-colors cursor-pointer text-xs font-semibold text-foreground"
+                aria-label="Switch language"
+              >
+                <span>{locale === "en" ? "🇬🇧" : "🇮🇩"}</span>
+                <span>{locale === "en" ? t("language.en") : t("language.id")}</span>
+              </button>
+
               {/* Auth: User Profile or Login */}
               {user ? (
                 <div style={{ position: "relative" }}>
@@ -119,14 +131,14 @@ export default function Header() {
                             className="block px-4 py-2 text-sm text-muted hover:text-primary hover:bg-surface-warm transition-colors"
                             onClick={() => setIsProfileOpen(false)}
                           >
-                            Admin Dashboard
+                            {t("nav.adminDashboard")}
                           </Link>
                         )}
                         <button
                           onClick={handleLogout}
                           className="w-full text-left px-4 py-2 text-sm text-red-500 hover:bg-red-50 transition-colors cursor-pointer"
                         >
-                          Sign Out
+                          {t("nav.signOut")}
                         </button>
                       </div>
                     </>
@@ -137,7 +149,7 @@ export default function Header() {
                   onClick={openAuthModal}
                   className="text-sm font-medium text-primary hover:text-accent transition-colors px-3 py-1.5 rounded-full hover:bg-surface-warm cursor-pointer"
                 >
-                  Login
+                  {t("nav.login")}
                 </button>
               )}
 
@@ -209,21 +221,21 @@ export default function Header() {
                 className="text-sm font-medium text-muted hover:text-primary"
                 onClick={() => setIsMobileMenuOpen(false)}
               >
-                Home
+                {t("nav.home")}
               </Link>
               <Link
                 href="/shop"
                 className="text-sm font-medium text-muted hover:text-primary"
                 onClick={() => setIsMobileMenuOpen(false)}
               >
-                Shop
+                {t("nav.shop")}
               </Link>
               <Link
                 href="/recipes"
                 className="text-sm font-medium text-muted hover:text-primary"
                 onClick={() => setIsMobileMenuOpen(false)}
               >
-                Recipes
+                {t("nav.recipes")}
               </Link>
               {user && (
                 <Link
@@ -231,7 +243,7 @@ export default function Header() {
                   className="text-sm font-medium text-muted hover:text-primary"
                   onClick={() => setIsMobileMenuOpen(false)}
                 >
-                  My Orders
+                  {t("nav.myOrders")}
                 </Link>
               )}
             </nav>

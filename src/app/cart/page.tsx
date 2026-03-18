@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useCart } from "@/context/CartContext";
 import { useAuth } from "@/context/AuthContext";
+import { useLanguage } from "@/context/LanguageContext";
 import { checkout } from "@/lib/order-api";
 import { formatRupiah } from "@/lib/currency";
 
@@ -18,6 +19,7 @@ export default function CartPage() {
     totalPrice,
   } = useCart();
   const { user, openAuthModal } = useAuth();
+  const { t } = useLanguage();
   const router = useRouter();
   const [isCheckingOut, setIsCheckingOut] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -41,12 +43,10 @@ export default function CartPage() {
       const response = await checkout(checkoutItems, address);
       clearCart();
 
-      // If we got a redirect URL from Midtrans, open it
       if (response.order.redirect_url) {
         window.open(response.order.redirect_url, "_blank");
       }
 
-      // Navigate to the order detail page
       router.push(`/orders/${response.order.id}`);
     } catch (err) {
       setError(
@@ -63,21 +63,21 @@ export default function CartPage() {
     return (
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-20 text-center">
         <span className="text-6xl block mb-6">🛒</span>
-        <h1 className="text-3xl font-bold font-[family-name:var(--font-heading)] mb-3">
-          Your Cart is Empty
+        <h1 className="text-3xl font-bold font-heading mb-3">
+          {t("cart.emptyTitle")}
         </h1>
         <p className="text-muted text-lg mb-8">
-          Start exploring recipes and shop premium Pan-Asian ingredients!
+          {t("cart.emptySubtitle")}
         </p>
         <div className="flex flex-wrap gap-4 justify-center">
-          <Link href="/shop" className="btn-buy-all !w-auto !px-8">
-            Browse Shop
+          <Link href="/shop" className="btn-buy-all w-auto! px-8!">
+            {t("cart.browseShop")}
           </Link>
           <Link
             href="/recipes"
             className="px-8 py-3 rounded-xl font-semibold border-2 border-primary text-primary hover:bg-primary hover:text-white transition-all"
           >
-            Explore Recipes
+            {t("cart.exploreRecipes")}
           </Link>
         </div>
       </div>
@@ -89,18 +89,18 @@ export default function CartPage() {
       {/* Header */}
       <div className="flex items-center justify-between mb-8">
         <div>
-          <h1 className="text-3xl font-bold font-[family-name:var(--font-heading)]">
-            Shopping Cart
+          <h1 className="text-3xl font-bold font-heading">
+            {t("cart.shoppingCart")}
           </h1>
           <p className="text-muted mt-1">
-            {totalItems} item{totalItems !== 1 ? "s" : ""}
+            {totalItems} {totalItems !== 1 ? t("cart.items") : t("cart.item")}
           </p>
         </div>
         <button
           onClick={clearCart}
           className="text-sm text-muted hover:text-secondary transition-colors cursor-pointer"
         >
-          Clear all
+          {t("cart.clearAll")}
         </button>
       </div>
 
@@ -125,15 +125,14 @@ export default function CartPage() {
       <div className="space-y-4 mb-8">
         {items.map((item) => (
           <div key={item.product.id} className="glass-card p-5 flex gap-4">
-            {/* Emoji placeholder */}
-            <div className="w-20 h-20 rounded-xl bg-surface-warm flex items-center justify-center text-3xl flex-shrink-0">
+            <div className="w-20 h-20 rounded-xl bg-surface-warm flex items-center justify-center text-3xl shrink-0">
               🥘
             </div>
 
             <div className="flex-1 min-w-0">
               <div className="flex items-start justify-between gap-4">
                 <div>
-                  <h3 className="font-semibold font-[family-name:var(--font-heading)] text-lg">
+                  <h3 className="font-semibold font-heading text-lg">
                     {item.product.name}
                   </h3>
                   <p className="text-muted text-sm line-clamp-1 mt-0.5">
@@ -173,7 +172,6 @@ export default function CartPage() {
               </div>
 
               <div className="flex items-center justify-between mt-4">
-                {/* Quantity */}
                 <div className="flex items-center gap-3">
                   <button
                     onClick={() =>
@@ -196,7 +194,6 @@ export default function CartPage() {
                   </button>
                 </div>
 
-                {/* Price */}
                 <div className="text-right">
                   <span className="text-lg font-bold text-primary">
                     {formatRupiah(
@@ -205,7 +202,7 @@ export default function CartPage() {
                   </span>
                   {item.quantity > 1 && (
                     <span className="text-xs text-muted block">
-                      {formatRupiah(item.product.price)} each
+                      {formatRupiah(item.product.price)} {t("cart.each")}
                     </span>
                   )}
                 </div>
@@ -235,7 +232,7 @@ export default function CartPage() {
               d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
             />
           </svg>
-          <h3 className="font-bold font-heading text-lg">Delivery Address</h3>
+          <h3 className="font-bold font-heading text-lg">{t("cart.deliveryAddress")}</h3>
         </div>
 
         <div className="space-y-3">
@@ -243,14 +240,14 @@ export default function CartPage() {
             htmlFor="address"
             className="block text-sm font-medium text-muted"
           >
-            Where should we send your order?
+            {t("cart.addressLabel")}
           </label>
           <div className="relative">
             <textarea
               id="address"
               value={address}
               onChange={(e) => setAddress(e.target.value)}
-              placeholder="e.g. 123 Food Street, Apartment 4B, Food City..."
+              placeholder={t("cart.addressPlaceholder")}
               rows={3}
               className="w-full bg-surface-warm border border-border rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all resize-none placeholder:text-muted/70"
             />
@@ -269,28 +266,28 @@ export default function CartPage() {
                 d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
               />
             </svg>
-            Make sure your address is complete to ensure smooth delivery.
+            {t("cart.addressHint")}
           </p>
         </div>
       </div>
 
       {/* Summary */}
       <div className="glass-card p-6">
-        <h3 className="font-bold font-heading text-lg mb-4">Order Summary</h3>
+        <h3 className="font-bold font-heading text-lg mb-4">{t("cart.orderSummary")}</h3>
 
         <div className="space-y-2 mb-4">
           <div className="flex justify-between text-sm">
-            <span className="text-muted">Subtotal ({totalItems} items)</span>
+            <span className="text-muted">{t("cart.subtotal")} ({totalItems} {totalItems !== 1 ? t("cart.items") : t("cart.item")})</span>
             <span className="font-medium">{formatRupiah(totalPrice)}</span>
           </div>
           <div className="flex justify-between text-sm">
-            <span className="text-muted">Shipping</span>
-            <span className="text-green-600 font-medium">Free</span>
+            <span className="text-muted">{t("cart.shipping")}</span>
+            <span className="text-green-600 font-medium">{t("cart.free")}</span>
           </div>
         </div>
 
         <div className="border-t border-border pt-4 flex justify-between items-center mb-6">
-          <span className="font-semibold text-lg">Total</span>
+          <span className="font-semibold text-lg">{t("cart.total")}</span>
           <span className="text-2xl font-bold text-primary">
             {formatRupiah(totalPrice)}
           </span>
@@ -324,12 +321,12 @@ export default function CartPage() {
                   animation: "spin 0.8s linear infinite",
                 }}
               />
-              Processing...
+              {t("cart.processing")}
             </span>
           ) : user ? (
-            "Proceed to Checkout"
+            t("cart.proceedToCheckout")
           ) : (
-            "Login to Checkout"
+            t("cart.loginToCheckout")
           )}
         </button>
 
@@ -337,7 +334,7 @@ export default function CartPage() {
           href="/shop"
           className="block text-center text-primary font-medium mt-4 hover:underline"
         >
-          ← Continue Shopping
+          {t("cart.continueShopping")}
         </Link>
       </div>
 

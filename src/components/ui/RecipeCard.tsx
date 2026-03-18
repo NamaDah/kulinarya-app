@@ -1,12 +1,16 @@
+"use client";
+
 import Image from "next/image";
 import Link from "next/link";
 import { Recipe } from "@/lib/types";
+import { useLanguage } from "@/context/LanguageContext";
 
 interface RecipeCardProps {
   recipe: Recipe;
 }
 
 export default function RecipeCard({ recipe }: RecipeCardProps) {
+  const { t } = useLanguage();
   const cuisineTag = recipe.cuisine_type;
   const totalTime = recipe.prep_time_minutes + recipe.cook_time_minutes;
 
@@ -56,7 +60,7 @@ export default function RecipeCard({ recipe }: RecipeCardProps) {
               />
             </svg>
             <span className="text-xs font-medium text-foreground">
-              {totalTime} min
+              {totalTime} {t("recipeDetail.min")}
             </span>
           </div>
         </div>
@@ -72,10 +76,10 @@ export default function RecipeCard({ recipe }: RecipeCardProps) {
 
           <div className="flex items-center gap-4 mt-3 text-xs text-muted">
             <span className="flex items-center gap-1">
-              <span>👨‍🍳</span> {recipe.servings} servings
+              <span>👨‍🍳</span> {recipe.servings} {t("recipeDetail.servings")}
             </span>
             <span className="flex items-center gap-1">
-              <span>⏱️</span> {recipe.prep_time_minutes}m prep
+              <span>⏱️</span> {recipe.prep_time_minutes}m {t("common.prep")}
             </span>
           </div>
         </div>

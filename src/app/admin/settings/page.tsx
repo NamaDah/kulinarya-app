@@ -3,9 +3,11 @@
 import { useState, useEffect } from "react";
 import { useAuth } from "@/context/AuthContext";
 import { updateAdminProfile, updateAdminPassword } from "@/lib/admin-api";
+import { useLanguage } from "@/context/LanguageContext";
 
 export default function AdminSettingsPage() {
   const { user } = useAuth();
+  const { t } = useLanguage();
 
   // Profile Form State
   const [profileName, setProfileName] = useState("");
@@ -30,11 +32,11 @@ export default function AdminSettingsPage() {
     setIsUpdatingProfile(true);
     try {
       await updateAdminProfile({ name: profileName, email: profileEmail });
-      alert("Profile updated successfully!");
+      alert(t("admin.profileUpdated"));
       // Reload to ensure Context and Sidebar grab the new name
       window.location.reload();
     } catch (err: any) {
-      alert(err.message || "Failed to update profile");
+      alert(err.message || t("admin.failedToUpdateProfile"));
     }
     setIsUpdatingProfile(false);
   };
@@ -42,7 +44,7 @@ export default function AdminSettingsPage() {
   const handlePasswordSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (newPassword !== confirmPassword) {
-      alert("New passwords do not match.");
+      alert(t("admin.passwordsNoMatch"));
       return;
     }
 
@@ -53,12 +55,12 @@ export default function AdminSettingsPage() {
         password: newPassword,
         password_confirmation: confirmPassword,
       });
-      alert("Password updated successfully!");
+      alert(t("admin.passwordUpdated"));
       setCurrentPassword("");
       setNewPassword("");
       setConfirmPassword("");
     } catch (err: any) {
-      alert(err.message || "Failed to update password");
+      alert(err.message || t("admin.failedToUpdatePassword"));
     }
     setIsUpdatingPassword(false);
   };
@@ -75,10 +77,10 @@ export default function AdminSettingsPage() {
             marginBottom: "0.5rem",
           }}
         >
-          Administrator Settings
+          {t("admin.adminSettings")}
         </h1>
         <p style={{ fontSize: "0.9rem", color: "#64748b" }}>
-          Update your profile information and secure your account.
+          {t("admin.settingsSubtitle")}
         </p>
       </div>
 
@@ -94,7 +96,7 @@ export default function AdminSettingsPage() {
               marginBottom: "0.5rem",
             }}
           >
-            Profile Details
+            {t("admin.profileDetails")}
           </h2>
           <p
             style={{
@@ -103,7 +105,7 @@ export default function AdminSettingsPage() {
               marginBottom: "1.5rem",
             }}
           >
-            Update your administrator account's name and email address.
+            {t("admin.profileDetailsSubtitle")}
           </p>
 
           <form
@@ -120,7 +122,7 @@ export default function AdminSettingsPage() {
                   marginBottom: "0.5rem",
                 }}
               >
-                Full Name
+                {t("admin.fullName")}
               </label>
               <input
                 type="text"
@@ -148,7 +150,7 @@ export default function AdminSettingsPage() {
                   marginBottom: "0.5rem",
                 }}
               >
-                Email Address
+                {t("admin.emailAddress")}
               </label>
               <input
                 type="email"
@@ -177,7 +179,7 @@ export default function AdminSettingsPage() {
                 type="submit"
                 disabled={isUpdatingProfile}
                 style={{
-                  background: isUpdatingProfile ? "#94a3b8" : "#d97706",
+                  background: isUpdatingProfile ? "#94a3b8" : "#d97706ff",
                   color: "#fff",
                   border: "none",
                   padding: "0.6rem 1.5rem",
@@ -187,7 +189,7 @@ export default function AdminSettingsPage() {
                   transition: "background 0.2s",
                 }}
               >
-                {isUpdatingProfile ? "Saving..." : "Save Profile"}
+                {isUpdatingProfile ? t("admin.saving") : t("admin.saveProfile")}
               </button>
             </div>
           </form>
@@ -204,7 +206,7 @@ export default function AdminSettingsPage() {
               marginBottom: "0.5rem",
             }}
           >
-            Change Password
+            {t("admin.changePassword")}
           </h2>
           <p
             style={{
@@ -213,7 +215,7 @@ export default function AdminSettingsPage() {
               marginBottom: "1.5rem",
             }}
           >
-            Ensure your account is using a long, random password to stay secure.
+            {t("admin.changePasswordSubtitle")}
           </p>
 
           <form
@@ -230,7 +232,7 @@ export default function AdminSettingsPage() {
                   marginBottom: "0.5rem",
                 }}
               >
-                Current Password
+                {t("admin.currentPassword")}
               </label>
               <input
                 type="password"
@@ -258,7 +260,7 @@ export default function AdminSettingsPage() {
                   marginBottom: "0.5rem",
                 }}
               >
-                New Password
+                {t("admin.newPassword")}
               </label>
               <input
                 type="password"
@@ -287,7 +289,7 @@ export default function AdminSettingsPage() {
                   marginBottom: "0.5rem",
                 }}
               >
-                Confirm New Password
+                {t("admin.confirmNewPassword")}
               </label>
               <input
                 type="password"
@@ -327,7 +329,7 @@ export default function AdminSettingsPage() {
                   transition: "background 0.2s",
                 }}
               >
-                {isUpdatingPassword ? "Updating..." : "Update Password"}
+                {isUpdatingPassword ? t("admin.updating") : t("admin.updatePassword")}
               </button>
             </div>
           </form>

@@ -1,21 +1,25 @@
 "use client";
 
+import { useLanguage } from "@/context/LanguageContext";
+
 interface CuisineTabsProps {
   activeTab: string;
   onTabChange: (tab: string) => void;
 }
 
-const tabs = [
-  { key: "all", label: "All", emoji: "🌏" },
-  { key: "chinese", label: "Chinese", emoji: "🇨🇳" },
-  { key: "japanese", label: "Japanese", emoji: "🇯🇵" },
-  { key: "korean", label: "Korean", emoji: "🇰🇷" },
-];
-
 export default function CuisineTabs({
   activeTab,
   onTabChange,
 }: CuisineTabsProps) {
+  const { t } = useLanguage();
+
+  const tabs = [
+    { key: "all", label: t("cuisines.all"), emoji: "🌏" },
+    { key: "chinese", label: t("cuisines.chinese"), emoji: "🇨🇳" },
+    { key: "japanese", label: t("cuisines.japanese"), emoji: "🇯🇵" },
+    { key: "korean", label: t("cuisines.korean"), emoji: "🇰🇷" },
+  ];
+
   return (
     <div className="flex flex-wrap gap-2 mb-8">
       {tabs.map((tab) => (

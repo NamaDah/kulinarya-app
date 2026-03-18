@@ -5,6 +5,7 @@ import { getAdminOrders, updateOrderStatus } from "@/lib/admin-order-api";
 import { formatRupiah } from "@/lib/currency";
 import { AdminOrder } from "@/lib/types";
 import { paymentColors, statusColors } from "@/constants/statusColors";
+import { useLanguage } from "@/context/LanguageContext";
 
 export default function AdminOrdersPage() {
   const [orders, setOrders] = useState<AdminOrder[]>([]);
@@ -15,6 +16,7 @@ export default function AdminOrdersPage() {
   const [statusFilter, setStatusFilter] = useState("");
   const [expandedId, setExpandedId] = useState<number | null>(null);
   const [updatingId, setUpdatingId] = useState<number | null>(null);
+  const { t, locale } = useLanguage();
 
   const fetchOrders = async () => {
     setLoading(true);
@@ -63,7 +65,7 @@ export default function AdminOrdersPage() {
         ),
       );
     } catch (err) {
-      alert(err instanceof Error ? err.message : "Failed to update");
+      alert(err instanceof Error ? err.message : t("admin.failedToUpdate"));
     }
     setUpdatingId(null);
   };
@@ -90,10 +92,10 @@ export default function AdminOrdersPage() {
               color: "#1e293b",
             }}
           >
-            Orders
+            {t("admin.orders")}
           </h1>
           <p style={{ fontSize: "0.85rem", color: "#64748b" }}>
-            {total} total order{total !== 1 ? "s" : ""}
+            {total} {t("admin.totalOrders_label")}
           </p>
         </div>
 
@@ -107,13 +109,13 @@ export default function AdminOrdersPage() {
           }}
           style={{ width: 180 }}
         >
-          <option value="">All Statuses</option>
-          <option value="pending">Pending</option>
-          <option value="processing">Processing</option>
-          <option value="confirmed">Confirmed</option>
-          <option value="shipped">Shipped</option>
-          <option value="delivered">Delivered</option>
-          <option value="cancelled">Cancelled</option>
+          <option value="">{t("admin.allStatuses")}</option>
+          <option value="pending">{t("admin.pending")}</option>
+          <option value="processing">{t("admin.processing")}</option>
+          <option value="confirmed">{t("admin.confirmed")}</option>
+          <option value="shipped">{t("admin.shipped")}</option>
+          <option value="delivered">{t("admin.delivered")}</option>
+          <option value="cancelled">{t("admin.cancelled")}</option>
         </select>
       </div>
 
@@ -133,30 +135,30 @@ export default function AdminOrdersPage() {
               }}
             />
             <p style={{ color: "#64748b", fontSize: "0.85rem" }}>
-              Loading orders...
+              {t("admin.loadingOrders")}
             </p>
           </div>
         ) : orders.length === 0 ? (
           <div className="empty-state">
             <span style={{ fontSize: "3rem", marginBottom: "1rem" }}>📦</span>
-            <p style={{ fontWeight: 600 }}>No orders found</p>
+            <p style={{ fontWeight: 600 }}>{t("admin.noOrdersFound")}</p>
             <p style={{ fontSize: "0.8rem", marginTop: "0.25rem" }}>
               {statusFilter
-                ? "Try changing the filter"
-                : "Orders will appear here"}
+                ? t("admin.tryChangingFilter")
+                : t("admin.ordersWillAppear")}
             </p>
           </div>
         ) : (
           <table className="admin-table">
             <thead>
               <tr>
-                <th>Order</th>
-                <th>Customer</th>
-                <th>Total</th>
-                <th>Status</th>
-                <th>Payment</th>
-                <th>Date</th>
-                <th>Actions</th>
+                <th>{t("admin.order")}</th>
+                <th>{t("admin.customer")}</th>
+                <th>{t("admin.total")}</th>
+                <th>{t("admin.status")}</th>
+                <th>{t("admin.payment")}</th>
+                <th>{t("admin.date")}</th>
+                <th>{t("admin.actions")}</th>
               </tr>
             </thead>
             <tbody>
@@ -177,7 +179,7 @@ export default function AdminOrdersPage() {
                       <td style={{ fontWeight: 600 }}>#{order.id}</td>
                       <td>
                         <div style={{ fontWeight: 500 }}>
-                          {order.user?.name || "Guest"}
+                          {order.user?.name || t("admin.guest")}
                         </div>
                         <div style={{ fontSize: "0.75rem", color: "#94a3b8" }}>
                           {order.user?.email || "—"}
@@ -218,7 +220,7 @@ export default function AdminOrdersPage() {
                       </td>
                       <td style={{ fontSize: "0.8rem", color: "#64748b" }}>
                         {new Date(order.created_at).toLocaleDateString(
-                          "en-US",
+                          locale === "id" ? "id-ID" : "en-US",
                           {
                             month: "short",
                             day: "numeric",
@@ -243,12 +245,12 @@ export default function AdminOrdersPage() {
                             opacity: updatingId === order.id ? 0.6 : 1,
                           }}
                         >
-                          <option value="pending">Pending</option>
-                          <option value="processing">Processing</option>
-                          <option value="confirmed">Confirmed</option>
-                          <option value="shipped">Shipped</option>
-                          <option value="delivered">Delivered</option>
-                          <option value="cancelled">Cancelled</option>
+                          <option value="pending">{t("admin.pending")}</option>
+                          <option value="processing">{t("admin.processing")}</option>
+                          <option value="confirmed">{t("admin.confirmed")}</option>
+                          <option value="shipped">{t("admin.shipped")}</option>
+                          <option value="delivered">{t("admin.delivered")}</option>
+                          <option value="cancelled">{t("admin.cancelled")}</option>
                         </select>
                       </td>
                     </tr>
@@ -268,7 +270,7 @@ export default function AdminOrdersPage() {
                               fontSize: "0.85rem",
                             }}
                           >
-                            Order Items
+                            {t("admin.orderItems")}
                           </div>
                           {order.items && order.items.length > 0 ? (
                             <div
@@ -313,7 +315,7 @@ export default function AdminOrdersPage() {
                             </div>
                           ) : (
                             <p style={{ fontSize: "0.8rem", color: "#94a3b8" }}>
-                              No items
+                              {t("admin.noItems")}
                             </p>
                           )}
                           {order.payment_reference && (
@@ -324,7 +326,7 @@ export default function AdminOrdersPage() {
                                 color: "#64748b",
                               }}
                             >
-                              Payment Ref:{" "}
+                              {t("admin.paymentRefShort")}{" "}
                               <span
                                 style={{
                                   fontFamily: "monospace",

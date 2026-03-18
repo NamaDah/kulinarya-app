@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
+import { useLanguage } from "@/context/LanguageContext";
 
 export default function AdminLoginPage() {
   const router = useRouter();
@@ -11,6 +12,7 @@ export default function AdminLoginPage() {
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const { t } = useLanguage();
 
   // If already logged in as admin, redirect
   if (!authLoading && user?.role === "admin") {
@@ -29,7 +31,7 @@ export default function AdminLoginPage() {
       // The auth context will update, and layout guard will handle redirect
       router.push("/admin/items");
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Login failed");
+      setError(err instanceof Error ? err.message : t("admin.loginFailed"));
     } finally {
       setLoading(false);
     }
@@ -67,7 +69,7 @@ export default function AdminLoginPage() {
               margin: "0 0 0.25rem",
             }}
           >
-            Admin Dashboard
+             {t("admin.adminLogin")}
           </h1>
           <p
             style={{
@@ -76,7 +78,7 @@ export default function AdminLoginPage() {
               margin: 0,
             }}
           >
-            Sign in to manage your store
+             {t("admin.signInToManage")}
           </p>
         </div>
 
@@ -110,7 +112,7 @@ export default function AdminLoginPage() {
                 marginBottom: "0.375rem",
               }}
             >
-              Email Address
+               {t("admin.emailAddress")}
             </label>
             <input
               id="admin-email"
@@ -136,7 +138,7 @@ export default function AdminLoginPage() {
                 marginBottom: "0.375rem",
               }}
             >
-              Password
+               {t("auth.password")}
             </label>
             <input
               id="admin-password"
@@ -167,7 +169,7 @@ export default function AdminLoginPage() {
               transition: "all 0.2s ease",
             }}
           >
-            {loading ? "Signing in..." : "Sign In"}
+             {loading ? t("admin.signingIn") : t("admin.signInBtn")}
           </button>
         </form>
 
@@ -179,7 +181,7 @@ export default function AdminLoginPage() {
             marginTop: "1.5rem",
           }}
         >
-          Only admin accounts can access this area.
+           {t("admin.adminOnly")}
         </p>
       </div>
     </div>

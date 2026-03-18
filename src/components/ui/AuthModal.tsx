@@ -2,9 +2,11 @@
 
 import { useState, useEffect, useCallback } from "react";
 import { useAuth } from "@/context/AuthContext";
+import { useLanguage } from "@/context/LanguageContext";
 
 export default function AuthModal() {
   const { authModalOpen, closeAuthModal, login, register } = useAuth();
+  const { t } = useLanguage();
   const [tab, setTab] = useState<"login" | "register">("login");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -61,7 +63,7 @@ export default function AuthModal() {
       await login(email, password);
       closeAuthModal();
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Login failed");
+      setError(err instanceof Error ? err.message : t("auth.loginFailed"));
     } finally {
       setLoading(false);
     }
@@ -72,7 +74,7 @@ export default function AuthModal() {
     setError("");
 
     if (regPassword !== regConfirm) {
-      setError("Passwords do not match");
+      setError(t("auth.passwordsNoMatch"));
       return;
     }
 
@@ -81,7 +83,7 @@ export default function AuthModal() {
       await register(name, regEmail, regPassword, regConfirm);
       closeAuthModal();
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Registration failed");
+      setError(err instanceof Error ? err.message : t("auth.registrationFailed"));
     } finally {
       setLoading(false);
     }
@@ -115,7 +117,7 @@ export default function AuthModal() {
         <div className="auth-modal-logo">
           <span style={{ fontSize: "2rem" }}>🍜</span>
           <h2>Kulinarya</h2>
-          <p>Sign in to start shopping</p>
+          <p>{t("auth.signInToShop")}</p>
         </div>
 
         {/* Tabs */}
@@ -127,7 +129,7 @@ export default function AuthModal() {
               setError("");
             }}
           >
-            Login
+            {t("auth.login")}
           </button>
           <button
             className={`auth-tab ${tab === "register" ? "active" : ""}`}
@@ -136,7 +138,7 @@ export default function AuthModal() {
               setError("");
             }}
           >
-            Register
+            {t("auth.register")}
           </button>
         </div>
 
@@ -147,7 +149,7 @@ export default function AuthModal() {
         {tab === "login" && (
           <form onSubmit={handleLogin} className="auth-form">
             <div className="auth-field">
-              <label htmlFor="login-email">Email</label>
+              <label htmlFor="login-email">{t("auth.email")}</label>
               <input
                 id="login-email"
                 type="email"
@@ -159,7 +161,7 @@ export default function AuthModal() {
               />
             </div>
             <div className="auth-field">
-              <label htmlFor="login-password">Password</label>
+              <label htmlFor="login-password">{t("auth.password")}</label>
               <input
                 id="login-password"
                 type="password"
@@ -170,7 +172,7 @@ export default function AuthModal() {
               />
             </div>
             <button type="submit" className="auth-submit" disabled={loading}>
-              {loading ? "Signing in..." : "Sign In"}
+              {loading ? t("auth.signingIn") : t("auth.signInBtn")}
             </button>
           </form>
         )}
@@ -179,7 +181,7 @@ export default function AuthModal() {
         {tab === "register" && (
           <form onSubmit={handleRegister} className="auth-form">
             <div className="auth-field">
-              <label htmlFor="reg-name">Full Name</label>
+              <label htmlFor="reg-name">{t("auth.fullName")}</label>
               <input
                 id="reg-name"
                 type="text"
@@ -191,7 +193,7 @@ export default function AuthModal() {
               />
             </div>
             <div className="auth-field">
-              <label htmlFor="reg-email">Email</label>
+              <label htmlFor="reg-email">{t("auth.email")}</label>
               <input
                 id="reg-email"
                 type="email"
@@ -202,7 +204,7 @@ export default function AuthModal() {
               />
             </div>
             <div className="auth-field">
-              <label htmlFor="reg-password">Password</label>
+              <label htmlFor="reg-password">{t("auth.password")}</label>
               <input
                 id="reg-password"
                 type="password"
@@ -213,7 +215,7 @@ export default function AuthModal() {
               />
             </div>
             <div className="auth-field">
-              <label htmlFor="reg-confirm">Confirm Password</label>
+              <label htmlFor="reg-confirm">{t("auth.confirmPassword")}</label>
               <input
                 id="reg-confirm"
                 type="password"
@@ -224,7 +226,7 @@ export default function AuthModal() {
               />
             </div>
             <button type="submit" className="auth-submit" disabled={loading}>
-              {loading ? "Creating account..." : "Create Account"}
+              {loading ? t("auth.creatingAccount") : t("auth.createAccount")}
             </button>
           </form>
         )}

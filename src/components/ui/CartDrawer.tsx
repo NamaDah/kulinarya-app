@@ -1,6 +1,7 @@
 "use client";
 
 import { useCart } from "@/context/CartContext";
+import { useLanguage } from "@/context/LanguageContext";
 import { formatRupiah } from "@/lib/currency";
 import Link from "next/link";
 
@@ -12,6 +13,7 @@ interface CartDrawerProps {
 export default function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
   const { items, removeItem, updateQuantity, totalItems, totalPrice } =
     useCart();
+  const { t } = useLanguage();
 
   if (!isOpen) return null;
 
@@ -28,7 +30,7 @@ export default function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
         {/* Header */}
         <div className="flex items-center justify-between p-5 border-b border-border">
           <h2 className="text-lg font-bold font-heading">
-            Your Cart ({totalItems})
+            {t("cartDrawer.yourCart")} ({totalItems})
           </h2>
           <button
             onClick={onClose}
@@ -57,9 +59,9 @@ export default function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
           {items.length === 0 ? (
             <div className="text-center py-16">
               <span className="text-5xl block mb-4">🛒</span>
-              <p className="text-muted text-lg">Your cart is empty</p>
+              <p className="text-muted text-lg">{t("cartDrawer.emptyCart")}</p>
               <p className="text-sm text-muted mt-1">
-                Add some delicious ingredients!
+                {t("cartDrawer.addSomething")}
               </p>
             </div>
           ) : (
@@ -137,7 +139,7 @@ export default function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
         {items.length > 0 && (
           <div className="p-5 border-t border-border bg-surface">
             <div className="flex justify-between mb-4">
-              <span className="text-muted">Total</span>
+              <span className="text-muted">{t("cartDrawer.total")}</span>
               <span className="text-xl font-bold text-primary">
                 {formatRupiah(totalPrice)}
               </span>
@@ -147,7 +149,7 @@ export default function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
               onClick={onClose}
               className="block text-center btn-buy-all"
             >
-              View Cart & Checkout
+              {t("cartDrawer.viewCartCheckout")}
             </Link>
           </div>
         )}

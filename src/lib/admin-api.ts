@@ -4,6 +4,7 @@ import {
   PaginatedResponse,
   ProductFilters,
   ProductFormData,
+  UserFilters,
 } from "./admin-types";
 
 const API_BASE = "/api";
@@ -116,9 +117,17 @@ export async function getAdminDashboard(): Promise<{
 }
 
 export async function getAdminUsers(
-  page = 1,
+  filters?: UserFilters,
 ): Promise<PaginatedResponse<User>> {
-  return adminFetch<PaginatedResponse<User>>(`/admin/users?page=${page}`);
+  const params = new URLSearchParams();
+
+  if (filters?.search) params.set("search", filters.search);
+  if (filters?.email) params.set("email", filters.email);
+  if (filters?.page) params.set("page", String(filters.page));
+  if (filters?.per_page) params.set("per_page", String(filters.per_page));
+
+  const query = params.toString() ? `?${params.toString()}` : "";
+  return adminFetch<PaginatedResponse<User>>(`/admin/users${query}`);
 }
 
 export async function updateUserRole(

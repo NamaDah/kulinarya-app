@@ -6,11 +6,13 @@ import { DashboardStats, AdminOrder } from "@/lib/types";
 import { formatRupiah } from "@/lib/currency";
 import Link from "next/link";
 import { paymentColors, statusColors } from "@/constants/statusColors";
+import { useLanguage } from "@/context/LanguageContext";
 
 export default function AdminDashboardPage() {
   const [stats, setStats] = useState<DashboardStats | null>(null);
   const [recentOrders, setRecentOrders] = useState<AdminOrder[]>([]);
   const [loading, setLoading] = useState(true);
+  const { t, locale } = useLanguage();
 
   useEffect(() => {
     const fetchDashboard = async () => {
@@ -43,7 +45,7 @@ export default function AdminDashboardPage() {
           }}
         />
         <p style={{ color: "#64748b", fontSize: "0.85rem" }}>
-          Loading dashboard...
+          {t("admin.loadingDashboard")}
         </p>
         <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
       </div>
@@ -62,10 +64,10 @@ export default function AdminDashboardPage() {
             marginBottom: "0.5rem",
           }}
         >
-          Dashboard Overview
+          {t("admin.dashboardOverview")}
         </h1>
         <p style={{ fontSize: "0.9rem", color: "#64748b" }}>
-          Welcome back! Here's what's happening with your store today.
+          {t("admin.dashboardWelcome")}
         </p>
       </div>
 
@@ -125,7 +127,7 @@ export default function AdminDashboardPage() {
                 marginBottom: "0.25rem",
               }}
             >
-              Total Revenue
+              {t("admin.totalRevenue")}
             </div>
             <div
               style={{
@@ -188,7 +190,7 @@ export default function AdminDashboardPage() {
                 marginBottom: "0.25rem",
               }}
             >
-              Total Orders
+              {t("admin.totalOrders")}
             </div>
             <div
               style={{
@@ -252,7 +254,7 @@ export default function AdminDashboardPage() {
                 marginBottom: "0.25rem",
               }}
             >
-              Total Users
+              {t("admin.totalUsers")}
             </div>
             <div
               style={{
@@ -287,7 +289,7 @@ export default function AdminDashboardPage() {
               color: "#1e293b",
             }}
           >
-            Recent Orders
+            {t("admin.recentOrders")}
           </h2>
           <Link
             href="/admin/orders"
@@ -298,7 +300,7 @@ export default function AdminDashboardPage() {
               textDecoration: "none",
             }}
           >
-            View all →
+            {t("admin.viewAll")}
           </Link>
         </div>
 
@@ -311,18 +313,18 @@ export default function AdminDashboardPage() {
               fontSize: "0.9rem",
             }}
           >
-            No recent orders found.
+            {t("admin.noRecentOrders")}
           </div>
         ) : (
           <table className="admin-table">
             <thead>
               <tr>
-                <th>Order</th>
-                <th>Customer</th>
-                <th>Total</th>
-                <th>Status</th>
-                <th>Payment</th>
-                <th>Date</th>
+                <th>{t("admin.order")}</th>
+                <th>{t("admin.customer")}</th>
+                <th>{t("admin.total")}</th>
+                <th>{t("admin.status")}</th>
+                <th>{t("admin.payment")}</th>
+                <th>{t("admin.date")}</th>
               </tr>
             </thead>
             <tbody>
@@ -335,7 +337,7 @@ export default function AdminDashboardPage() {
                     <td style={{ fontWeight: 600 }}>#{order.id}</td>
                     <td>
                       <div style={{ fontWeight: 500 }}>
-                        {order.user?.name || "Guest"}
+                        {order.user?.name || t("admin.guest")}
                       </div>
                       <div style={{ fontSize: "0.75rem", color: "#94a3b8" }}>
                         {order.user?.email || "—"}
@@ -375,7 +377,7 @@ export default function AdminDashboardPage() {
                       </span>
                     </td>
                     <td style={{ fontSize: "0.8rem", color: "#64748b" }}>
-                      {new Date(order.created_at).toLocaleDateString("en-US", {
+                      {new Date(order.created_at).toLocaleDateString(locale === "id" ? "id-ID" : "en-US", {
                         month: "short",
                         day: "numeric",
                         year: "numeric",

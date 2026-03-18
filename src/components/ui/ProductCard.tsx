@@ -5,6 +5,7 @@ import { Product } from "@/lib/types";
 import { formatRupiah } from "@/lib/currency";
 import { useCart } from "@/context/CartContext";
 import { useAuth } from "@/context/AuthContext";
+import { useLanguage } from "@/context/LanguageContext";
 
 interface ProductCardProps {
   product: Product;
@@ -13,6 +14,7 @@ interface ProductCardProps {
 export default function ProductCard({ product }: ProductCardProps) {
   const { addItem } = useCart();
   const { user, openAuthModal } = useAuth();
+  const { t } = useLanguage();
 
   const cuisineTag = product.category?.cuisine_type;
 
@@ -73,7 +75,7 @@ export default function ProductCard({ product }: ProductCardProps) {
             disabled={!product.in_stock}
             className={`btn-buy ${!product.in_stock ? "opacity-50 cursor-not-allowed" : ""}`}
           >
-            {product.in_stock ? "Add to Cart" : "Out of Stock"}
+            {product.in_stock ? t("product.addToCart") : t("product.outOfStock")}
           </button>
         </div>
       </div>

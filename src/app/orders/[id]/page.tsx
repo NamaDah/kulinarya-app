@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
+import { useLanguage } from "@/context/LanguageContext";
 import { getOrder } from "@/lib/order-api";
 import { formatRupiah } from "@/lib/currency";
 import { Order } from "@/lib/types";
@@ -32,9 +33,12 @@ export default function OrderDetailPage() {
   const params = useParams();
   const orderId = Number(params.id);
   const { user, loading: authLoading } = useAuth();
+  const { t, locale } = useLanguage();
   const [order, setOrder] = useState<Order | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+
+  const dateLocale = locale === "id" ? "id-ID" : "en-US";
 
   useEffect(() => {
     if (authLoading || !user) return;
@@ -42,9 +46,9 @@ export default function OrderDetailPage() {
     setLoading(true);
     getOrder(orderId)
       .then((data) => setOrder(data))
-      .catch(() => setError("Order not found"))
+      .catch(() => setError(t("orderDetail.orderNotFound")))
       .finally(() => setLoading(false));
-  }, [orderId, user, authLoading]);
+  }, [orderId, user, authLoading, t]);
 
   if (authLoading || loading) {
     return (
@@ -70,13 +74,13 @@ export default function OrderDetailPage() {
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-20 text-center">
         <span className="text-6xl block mb-6">😕</span>
         <h1 className="text-2xl font-bold font-[family-name:var(--font-heading)] mb-3">
-          {error || "Order Not Found"}
+          {error || t("orderDetail.orderNotFound")}
         </h1>
         <Link
           href="/orders"
           className="text-primary font-medium hover:underline"
         >
-          ← Back to Orders
+          {t("orderDetail.backToOrders")}
         </Link>
       </div>
     );
@@ -93,7 +97,7 @@ export default function OrderDetailPage() {
         className="text-primary font-medium hover:underline text-sm"
         style={{ display: "inline-block", marginBottom: "1.5rem" }}
       >
-        ← Back to Orders
+        {t("orderDetail.backToOrders")}
       </Link>
 
       {/* Header */}
@@ -109,7 +113,7 @@ export default function OrderDetailPage() {
       >
         <div>
           <h1 className="text-3xl font-bold font-[family-name:var(--font-heading)]">
-            Order #{order.id}
+            {t("orders.orderPrefix")}{order.id}
           </h1>
           <p
             style={{
@@ -118,8 +122,8 @@ export default function OrderDetailPage() {
               marginTop: "0.25rem",
             }}
           >
-            Placed on{" "}
-            {new Date(order.created_at).toLocaleDateString("en-US", {
+            {t("orderDetail.placedOn")}{" "}
+            {new Date(order.created_at).toLocaleDateString(dateLocale, {
               year: "numeric",
               month: "long",
               day: "numeric",
@@ -163,7 +167,7 @@ export default function OrderDetailPage() {
               marginBottom: "0.5rem",
             }}
           >
-            Order Status
+            {t("orderDetail.orderStatus")}
           </div>
           <span
             style={{
@@ -194,7 +198,7 @@ export default function OrderDetailPage() {
               marginBottom: "0.5rem",
             }}
           >
-            Payment Status
+            {t("orderDetail.paymentStatus")}
           </div>
           <span
             style={{
@@ -227,7 +231,7 @@ export default function OrderDetailPage() {
             fontSize: "0.85rem",
           }}
         >
-          <span style={{ color: "#78716c" }}>Payment Ref: </span>
+          <span style={{ color: "#78716c" }}>{t("orderDetail.paymentRef")} </span>
           <span style={{ fontWeight: 600, fontFamily: "monospace" }}>
             {order.payment_reference}
           </span>
@@ -252,20 +256,16 @@ export default function OrderDetailPage() {
         >
           <div>
             <div style={{ fontWeight: 600, color: "#92400e" }}>
-              Payment Pending
+              {t("orderDetail.paymentPending")}
             </div>
             <div style={{ fontSize: "0.8rem", color: "#b45309" }}>
-              Complete your payment to process this order.
+              {t("orderDetail.completePayment")}
             </div>
           </div>
           <button
             className="btn-buy"
             onClick={() => {
-              // For Midtrans Snap, we can try to open the snap popup
-              // or redirect to the payment page
               if (order.snap_token) {
-                // If redirect_url exists, navigate there
-                // Otherwise, open Midtrans snap
                 window.open(
                   `https://app.sandbox.midtrans.com/snap/v2/vtweb/${order.snap_token}`,
                   "_blank",
@@ -273,7 +273,7 @@ export default function OrderDetailPage() {
               }
             }}
           >
-            Pay Now →
+            {t("orderDetail.payNow")}
           </button>
         </div>
       )}
@@ -296,7 +296,7 @@ export default function OrderDetailPage() {
               marginBottom: "0.5rem",
             }}
           >
-            Delivery Address
+            {t("orderDetail.deliveryAddress")}
           </div>
           <div
             style={{
@@ -324,7 +324,7 @@ export default function OrderDetailPage() {
             fontSize: "1rem",
           }}
         >
-          Order Items ({order.items?.length || 0})
+          {t("orderDetail.orderItems")} ({order.items?.length || 0})
         </div>
         {order.items?.map((item, index) => (
           <div
@@ -360,7 +360,7 @@ export default function OrderDetailPage() {
                 {item.product_name}
               </div>
               <div style={{ fontSize: "0.8rem", color: "#78716c" }}>
-                Qty: {item.quantity} × {formatRupiah(item.unit_price)}
+                {t("orderDetail.qty")} {item.quantity} × {formatRupiah(item.unit_price)}
               </div>
             </div>
             <div
@@ -387,7 +387,7 @@ export default function OrderDetailPage() {
             fontSize: "1.1rem",
           }}
         >
-          <span>Total</span>
+          <span>{t("orderDetail.total")}</span>
           <span style={{ color: "#d97706" }}>
             {formatRupiah(order.total_amount)}
           </span>

@@ -3,6 +3,7 @@ import { Outfit, Inter } from "next/font/google";
 import "./globals.css";
 import { CartProvider } from "@/context/CartContext";
 import { AuthProvider } from "@/context/AuthContext";
+import { LanguageProvider } from "@/context/LanguageContext";
 import StoreShell from "@/components/layout/StoreShell";
 import AuthModal from "@/components/ui/AuthModal";
 
@@ -32,12 +33,14 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${outfit.variable} ${inter.variable} antialiased`}>
-        <AuthProvider>
-          <CartProvider>
-            <StoreShell>{children}</StoreShell>
-            <AuthModal />
-          </CartProvider>
-        </AuthProvider>
+        <LanguageProvider>
+          <AuthProvider>
+            <CartProvider>
+              <StoreShell>{children}</StoreShell>
+              <AuthModal />
+            </CartProvider>
+          </AuthProvider>
+        </LanguageProvider>
       </body>
     </html>
   );

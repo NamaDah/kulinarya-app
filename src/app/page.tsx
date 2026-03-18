@@ -1,21 +1,28 @@
+"use client";
+
 import Link from "next/link";
 import Image from "next/image";
+import { useEffect, useState } from "react";
 import { getFeaturedRecipes, getCategories } from "@/lib/api";
 import RecipeCard from "@/components/ui/RecipeCard";
 import { Recipe, Category } from "@/lib/types";
+import { useLanguage } from "@/context/LanguageContext";
 
-export default async function HomePage() {
-  let recipes: Recipe[] = [];
-  let categories: Category[] = [];
+export default function HomePage() {
+  const { t } = useLanguage();
+  const [recipes, setRecipes] = useState<Recipe[]>([]);
+  const [categories, setCategories] = useState<Category[]>([]);
 
-  try {
-    [recipes, categories] = await Promise.all([
-      getFeaturedRecipes(),
-      getCategories(),
-    ]);
-  } catch {
-    // API might be down; render gracefully
-  }
+  useEffect(() => {
+    Promise.all([getFeaturedRecipes(), getCategories()])
+      .then(([r, c]) => {
+        setRecipes(r);
+        setCategories(c);
+      })
+      .catch(() => {
+        // API might be down; render gracefully
+      });
+  }, []);
 
   return (
     <>
@@ -28,18 +35,16 @@ export default async function HomePage() {
                 🍜
               </span>
               <h1 className="text-4xl md:text-6xl font-extrabold font-[family-name:var(--font-heading)] text-foreground leading-tight mb-6 animate-fade-in-up">
-                Taste the Flavors of{" "}
+                {t("home.heroTitle")}{" "}
                 <span className="bg-gradient-to-r from-primary via-accent to-secondary bg-clip-text text-transparent">
-                  Pan-Asia
+                  {t("home.heroPanAsia")}
                 </span>
               </h1>
               <p
                 className="text-lg md:text-xl text-muted mb-8 leading-relaxed animate-fade-in-up"
                 style={{ animationDelay: "0.1s" }}
               >
-                Discover authentic recipes from China, Japan, and Korea — and
-                shop all the premium ingredients you need to recreate them at
-                home.
+                {t("home.heroSubtitle")}
               </p>
               <div
                 className="flex flex-wrap gap-4 animate-fade-in-up"
@@ -49,13 +54,13 @@ export default async function HomePage() {
                   href="/recipes"
                   className="btn-buy-all inline-block text-center !w-auto !px-8"
                 >
-                  Explore Recipes
+                  {t("home.exploreRecipes")}
                 </Link>
                 <Link
                   href="/shop"
                   className="inline-block px-8 py-3.5 rounded-xl font-semibold border-2 border-primary text-primary hover:bg-primary hover:text-white transition-all duration-200"
                 >
-                  Shop Ingredients
+                  {t("home.shopIngredients")}
                 </Link>
               </div>
             </div>
@@ -83,17 +88,17 @@ export default async function HomePage() {
           <div className="flex items-center justify-between mb-8">
             <div>
               <h2 className="text-3xl font-bold font-[family-name:var(--font-heading)]">
-                Featured Recipes
+                {t("home.featuredRecipes")}
               </h2>
               <p className="text-muted mt-1">
-                Chef-curated dishes to inspire your cooking
+                {t("home.featuredSubtitle")}
               </p>
             </div>
             <Link
               href="/recipes"
               className="hidden sm:inline-flex items-center gap-1 text-primary font-medium hover:underline"
             >
-              View all
+              {t("home.viewAll")}
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 className="h-4 w-4"
@@ -124,10 +129,10 @@ export default async function HomePage() {
         <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
           <div className="text-center mb-12">
             <h2 className="text-3xl font-bold font-[family-name:var(--font-heading)] mb-2">
-              Shop by Cuisine
+              {t("home.shopByCuisine")}
             </h2>
             <p className="text-muted">
-              Explore premium ingredients from across Asia
+              {t("home.shopByCuisineSubtitle")}
             </p>
           </div>
 
@@ -170,17 +175,16 @@ export default async function HomePage() {
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
         <div className="gradient-warm rounded-3xl p-10 md:p-16 text-center text-white">
           <h2 className="text-3xl md:text-4xl font-bold font-heading mb-4">
-            Ready to Cook Something Amazing?
+            {t("home.ctaTitle")}
           </h2>
           <p className="text-white/80 text-lg mb-8 max-w-xl mx-auto">
-            Every recipe comes with a curated list of buyable ingredients. Just
-            click &ldquo;Buy All&rdquo; and start your culinary adventure.
+            {t("home.ctaSubtitle")}
           </p>
           <Link
             href="/recipes"
             className="inline-block px-8 py-3.5 bg-white text-primary rounded-xl font-bold hover:bg-white/90 transition-all shadow-lg"
           >
-            Browse All Recipes
+            {t("home.browseAllRecipes")}
           </Link>
         </div>
       </section>

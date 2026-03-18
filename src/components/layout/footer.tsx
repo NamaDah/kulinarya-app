@@ -1,6 +1,11 @@
+"use client";
+
 import Link from "next/link";
+import { useLanguage } from "@/context/LanguageContext";
 
 export default function Footer() {
+  const { t } = useLanguage();
+
   return (
     <footer className="bg-stone-900 text-stone-300 mt-20">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
@@ -14,15 +19,14 @@ export default function Footer() {
               </span>
             </div>
             <p className="text-sm text-stone-400 leading-relaxed">
-              Discover authentic Pan-Asian recipes and shop premium Chinese,
-              Japanese, and Korean ingredients for your kitchen.
+              {t("footer.tagline")}
             </p>
           </div>
 
           {/* Quick Links */}
           <div>
             <h4 className="text-white font-semibold mb-4 font-heading">
-              Explore
+              {t("footer.explore")}
             </h4>
             <ul className="space-y-2 text-sm">
               <li>
@@ -30,7 +34,7 @@ export default function Footer() {
                   href="/shop"
                   className="hover:text-amber-400 transition-colors"
                 >
-                  Shop Ingredients
+                  {t("footer.shopIngredients")}
                 </Link>
               </li>
               <li>
@@ -38,7 +42,7 @@ export default function Footer() {
                   href="/recipes"
                   className="hover:text-amber-400 transition-colors"
                 >
-                  Browse Recipes
+                  {t("footer.browseRecipes")}
                 </Link>
               </li>
               <li>
@@ -46,7 +50,7 @@ export default function Footer() {
                   href="/cart"
                   className="hover:text-amber-400 transition-colors"
                 >
-                  My Cart
+                  {t("footer.myCart")}
                 </Link>
               </li>
             </ul>
@@ -55,7 +59,7 @@ export default function Footer() {
           {/* Cuisines */}
           <div>
             <h4 className="text-white font-semibold mb-4 font-heading">
-              Cuisines
+              {t("footer.cuisines")}
             </h4>
             <ul className="space-y-2 text-sm">
               <li>
@@ -63,7 +67,7 @@ export default function Footer() {
                   href="/shop?cuisine=chinese"
                   className="hover:text-red-400 transition-colors"
                 >
-                  🇨🇳 Chinese
+                  🇨🇳 {t("cuisines.chinese")}
                 </Link>
               </li>
               <li>
@@ -71,7 +75,7 @@ export default function Footer() {
                   href="/shop?cuisine=japanese"
                   className="hover:text-pink-400 transition-colors"
                 >
-                  🇯🇵 Japanese
+                  🇯🇵 {t("cuisines.japanese")}
                 </Link>
               </li>
               <li>
@@ -79,7 +83,7 @@ export default function Footer() {
                   href="/shop?cuisine=korean"
                   className="hover:text-orange-400 transition-colors"
                 >
-                  🇰🇷 Korean
+                  🇰🇷 {t("cuisines.korean")}
                 </Link>
               </li>
             </ul>
@@ -89,8 +93,7 @@ export default function Footer() {
         {/* Bottom */}
         <div className="border-t border-stone-700 mt-8 pt-6 text-center text-xs text-stone-500">
           <p>
-            &copy; {new Date().getFullYear()} Kulinarya. Made with ❤️ for food
-            lovers.
+            &copy; {new Date().getFullYear()} {t("footer.copyright")}
           </p>
         </div>
       </div>

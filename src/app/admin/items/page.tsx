@@ -19,6 +19,7 @@ import {
 import ItemFormModal from "@/components/admin/ItemFormModal";
 import DeleteConfirmDialog from "@/components/admin/DeleteConfirmDialog";
 import ItemDetailModal from "@/components/admin/ItemDetailModal";
+import { useLanguage } from "@/context/LanguageContext";
 
 export default function AdminItemsPage() {
   // Data
@@ -26,6 +27,7 @@ export default function AdminItemsPage() {
     useState<PaginatedResponse<AdminProduct> | null>(null);
   const [categories, setCategories] = useState<Category[]>([]);
   const [loading, setLoading] = useState(true);
+  const { t, locale } = useLanguage();
 
   // Filters
   const [filters, setFilters] = useState<ProductFilters>({
@@ -149,7 +151,7 @@ export default function AdminItemsPage() {
   };
 
   const formatDate = (dateStr: string) => {
-    return new Date(dateStr).toLocaleDateString("en-US", {
+    return new Date(dateStr).toLocaleDateString(locale === "id" ? "id-ID" : "en-US", {
       month: "short",
       day: "numeric",
       year: "numeric",
@@ -179,7 +181,7 @@ export default function AdminItemsPage() {
               margin: 0,
             }}
           >
-            Items
+             {t("admin.itemsTitle")}
           </h1>
           <p
             style={{
@@ -188,7 +190,7 @@ export default function AdminItemsPage() {
               margin: "0.25rem 0 0",
             }}
           >
-            Manage your product catalog
+             {t("admin.manageProducts")}
           </p>
         </div>
         <button className="btn-admin-primary" onClick={handleAdd}>
@@ -205,7 +207,7 @@ export default function AdminItemsPage() {
             <path d="M5 12h14" />
             <path d="M12 5v14" />
           </svg>
-          Add New Item
+           {t("admin.addNewItem")}
         </button>
       </div>
 
@@ -245,7 +247,7 @@ export default function AdminItemsPage() {
           </svg>
           <input
             type="text"
-            placeholder="Search items..."
+             placeholder={t("admin.searchItems")}
             value={searchInput}
             onChange={(e) => setSearchInput(e.target.value)}
             className="admin-input"
@@ -262,7 +264,7 @@ export default function AdminItemsPage() {
             setFilters((f) => ({ ...f, category_id: e.target.value, page: 1 }))
           }
         >
-          <option value="">All Categories</option>
+           <option value="">{t("admin.allCategories")}</option>
           {categories.map((cat) => (
             <option key={cat.id} value={cat.id}>
               {cat.name}
@@ -279,9 +281,9 @@ export default function AdminItemsPage() {
             setFilters((f) => ({ ...f, status: e.target.value, page: 1 }))
           }
         >
-          <option value="">All Status</option>
-          <option value="active">Active</option>
-          <option value="inactive">Inactive</option>
+           <option value="">{t("admin.allStatus")}</option>
+           <option value="active">{t("admin.active")}</option>
+           <option value="inactive">{t("admin.inactive")}</option>
         </select>
 
         {/* Total count */}
@@ -355,12 +357,12 @@ export default function AdminItemsPage() {
               <path d="M12 22V12" />
             </svg>
             <p style={{ fontWeight: 600, fontSize: "1rem", color: "#64748b" }}>
-              No items found
+              {t("admin.noItemsFound")}
             </p>
             <p style={{ fontSize: "0.8rem", marginTop: "0.25rem" }}>
               {filters.search || filters.category_id || filters.status
-                ? "Try adjusting your filters"
-                : "Get started by adding your first item"}
+                ? t("admin.tryAdjustingFilters")
+                : t("admin.getStarted")}
             </p>
             {!filters.search && !filters.category_id && !filters.status && (
               <button
@@ -381,7 +383,7 @@ export default function AdminItemsPage() {
                   <path d="M5 12h14" />
                   <path d="M12 5v14" />
                 </svg>
-                Add First Item
+                 {t("admin.addFirstItem")}
               </button>
             )}
           </div>
@@ -391,14 +393,14 @@ export default function AdminItemsPage() {
             <table className="admin-table">
               <thead>
                 <tr>
-                  <th>Image</th>
-                  <th>Item Name</th>
-                  <th>Category</th>
-                  <th>Price</th>
-                  <th>Unit</th>
-                  <th>Status</th>
-                  <th>Created At</th>
-                  <th>Actions</th>
+                   <th>{t("admin.image")}</th>
+                   <th>{t("admin.itemName")}</th>
+                   <th>{t("admin.category")}</th>
+                   <th>{t("admin.price")}</th>
+                   <th>{t("admin.unit")}</th>
+                   <th>{t("admin.status")}</th>
+                   <th>{t("admin.createdAt")}</th>
+                   <th>{t("admin.actions")}</th>
                 </tr>
               </thead>
               <tbody>
@@ -514,7 +516,7 @@ export default function AdminItemsPage() {
                       <span
                         className={`badge ${product.in_stock ? "badge-active" : "badge-inactive"}`}
                       >
-                        {product.in_stock ? "Active" : "Inactive"}
+                         {product.in_stock ? t("admin.active") : t("admin.inactive")}
                       </span>
                     </td>
 
@@ -609,8 +611,8 @@ export default function AdminItemsPage() {
             }}
           >
             <div style={{ fontSize: "0.8rem", color: "#94a3b8" }}>
-              Showing {products.from || 0} to {products.to || 0} of{" "}
-              {products.total} results
+               {t("admin.showing")} {products.from || 0} {t("admin.to")} {products.to || 0} {t("admin.of")}{" "}
+               {products.total} {t("admin.results")}
             </div>
             <div style={{ display: "flex", gap: "0.375rem" }}>
               {/* Prev */}

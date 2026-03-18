@@ -5,8 +5,10 @@ import { Product } from "@/lib/types";
 import { getProducts } from "@/lib/api";
 import ProductCard from "@/components/ui/ProductCard";
 import CuisineTabs from "@/components/ui/CuisineTabs";
+import { useLanguage } from "@/context/LanguageContext";
 
 export default function ShopPage() {
+  const { t } = useLanguage();
   const [activeTab, setActiveTab] = useState("all");
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
@@ -34,10 +36,10 @@ export default function ShopPage() {
       {/* Header */}
       <div className="mb-8">
         <h1 className="text-3xl md:text-4xl font-bold font-[family-name:var(--font-heading)] mb-2">
-          Shop Ingredients
+          {t("shop.title")}
         </h1>
         <p className="text-muted text-lg">
-          Premium Pan-Asian ingredients delivered to your door
+          {t("shop.subtitle")}
         </p>
       </div>
 
@@ -64,8 +66,8 @@ export default function ShopPage() {
       ) : products.length === 0 ? (
         <div className="text-center py-20">
           <span className="text-5xl block mb-4">🍃</span>
-          <p className="text-muted text-xl">No products found</p>
-          <p className="text-sm text-muted mt-1">Try a different cuisine tab</p>
+          <p className="text-muted text-xl">{t("shop.noProducts")}</p>
+          <p className="text-sm text-muted mt-1">{t("shop.tryDifferentTab")}</p>
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">

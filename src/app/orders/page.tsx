@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { useAuth } from "@/context/AuthContext";
+import { useLanguage } from "@/context/LanguageContext";
 import { getOrders } from "@/lib/order-api";
 import { formatRupiah } from "@/lib/currency";
 import { Order } from "@/lib/types";
@@ -10,6 +11,7 @@ import { paymentColors, statusColors } from "@/constants/statusColors";
 
 export default function OrdersPage() {
   const { user, loading: authLoading, openAuthModal } = useAuth();
+  const { t, locale } = useLanguage();
   const [orders, setOrders] = useState<Order[]>([]);
   const [loading, setLoading] = useState(true);
   const [page, setPage] = useState(1);
@@ -22,8 +24,6 @@ export default function OrdersPage() {
     setLoading(true);
     getOrders(page)
       .then((res) => {
-        // The API returns paginated data where each item has nested order_products
-        // We need to map the API response to our Order type
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const mappedOrders = (res.data as any[]).map((order) => ({
           ...order,
@@ -45,6 +45,8 @@ export default function OrdersPage() {
       .catch(() => setOrders([]))
       .finally(() => setLoading(false));
   }, [user, authLoading, page]);
+
+  const dateLocale = locale === "id" ? "id-ID" : "en-US";
 
   if (authLoading) {
     return (
@@ -70,13 +72,13 @@ export default function OrdersPage() {
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-20 text-center">
         <span className="text-6xl block mb-6">🔒</span>
         <h1 className="text-3xl font-bold font-[family-name:var(--font-heading)] mb-3">
-          Sign In Required
+          {t("orders.signInRequired")}
         </h1>
         <p className="text-muted text-lg mb-8">
-          Please sign in to view your orders.
+          {t("orders.signInToView")}
         </p>
         <button onClick={openAuthModal} className="btn-buy-all !w-auto !px-10">
-          Sign In
+          {t("orders.signIn")}
         </button>
       </div>
     );
@@ -85,7 +87,7 @@ export default function OrdersPage() {
   return (
     <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
       <h1 className="text-3xl font-bold font-[family-name:var(--font-heading)] mb-8">
-        My Orders
+        {t("orders.myOrders")}
       </h1>
 
       {loading ? (
@@ -102,13 +104,13 @@ export default function OrdersPage() {
         <div className="text-center py-16">
           <span className="text-6xl block mb-6">📦</span>
           <h2 className="text-xl font-semibold font-[family-name:var(--font-heading)] mb-2">
-            No Orders Yet
+            {t("orders.noOrdersYet")}
           </h2>
           <p className="text-muted mb-6">
-            Start shopping and your orders will appear here!
+            {t("orders.noOrdersSubtitle")}
           </p>
           <Link href="/shop" className="btn-buy-all w-auto! px-10!">
-            Browse Shop
+            {t("orders.browseShop")}
           </Link>
         </div>
       ) : (
@@ -142,7 +144,7 @@ export default function OrdersPage() {
                           fontSize: "1.1rem",
                         }}
                       >
-                        Order #{order.id}
+                        {t("orders.orderPrefix")}{order.id}
                       </div>
                       <div
                         style={{
@@ -152,7 +154,7 @@ export default function OrdersPage() {
                         }}
                       >
                         {new Date(order.created_at).toLocaleDateString(
-                          "en-US",
+                          dateLocale,
                           {
                             year: "numeric",
                             month: "long",
@@ -223,14 +225,13 @@ export default function OrdersPage() {
                         color: "#78716c",
                       }}
                     >
-                      {order.items.length} item
-                      {order.items.length !== 1 ? "s" : ""}:{" "}
+                      {order.items.length} {order.items.length !== 1 ? t("cart.items") : t("cart.item")}:{" "}
                       {order.items
                         .slice(0, 3)
                         .map((i) => i.product_name)
                         .join(", ")}
                       {order.items.length > 3 &&
-                        ` +${order.items.length - 3} more`}
+                        ` +${order.items.length - 3} ${t("orders.more")}`}
                     </div>
                   )}
                 </Link>
