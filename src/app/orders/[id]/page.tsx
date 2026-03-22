@@ -8,6 +8,7 @@ import { useLanguage } from "@/context/LanguageContext";
 import { getOrder } from "@/lib/order-api";
 import { formatRupiah } from "@/lib/currency";
 import { Order } from "@/lib/types";
+import { echo } from "@/lib/echo";
 
 const statusConfig: Record<
   string,
@@ -43,11 +44,29 @@ export default function OrderDetailPage() {
   useEffect(() => {
     if (authLoading || !user) return;
 
-    setLoading(true);
-    getOrder(orderId)
-      .then((data) => setOrder(data))
-      .catch(() => setError(t("orderDetail.orderNotFound")))
-      .finally(() => setLoading(false));
+    const fetchOrder = () => {
+      setLoading(true);
+      getOrder(orderId)
+        .then((data) => setOrder(data))
+        .catch(() => setError(t("orderDetail.orderNotFound")))
+        .finally(() => setLoading(false));
+    };
+
+    fetchOrder();
+
+    if (echo) {
+      const channel = echo.channel(`payment.${orderId}`);
+      channel.listen(".PaymentStatusUpdated", (e: any) => {
+        console.log("WebSocket event received: PaymentStatusUpdated", e);
+        // Refresh order details when status changes
+        getOrder(orderId).then((data) => setOrder(data));
+      });
+
+      return () => {
+        channel.stopListening(".PaymentStatusUpdated");
+        echo?.leaveChannel(`payment.${orderId}`);
+      };
+    }
   }, [orderId, user, authLoading, t]);
 
   if (authLoading || loading) {

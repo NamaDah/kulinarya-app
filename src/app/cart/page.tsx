@@ -66,9 +66,7 @@ export default function CartPage() {
         <h1 className="text-3xl font-bold font-heading mb-3">
           {t("cart.emptyTitle")}
         </h1>
-        <p className="text-muted text-lg mb-8">
-          {t("cart.emptySubtitle")}
-        </p>
+        <p className="text-muted text-lg mb-8">{t("cart.emptySubtitle")}</p>
         <div className="flex flex-wrap gap-4 justify-center">
           <Link href="/shop" className="btn-buy-all w-auto! px-8!">
             {t("cart.browseShop")}
@@ -179,7 +177,7 @@ export default function CartPage() {
                     }
                     className="w-8 h-8 rounded-full bg-border flex items-center justify-center text-sm font-bold hover:bg-stone-300 transition-colors cursor-pointer"
                   >
-                    −
+                    -
                   </button>
                   <span className="font-medium w-8 text-center">
                     {item.quantity}
@@ -196,13 +194,11 @@ export default function CartPage() {
 
                 <div className="text-right">
                   <span className="text-lg font-bold text-primary">
-                    {formatRupiah(
-                      parseFloat(item.product.price) * item.quantity,
-                    )}
+                    {`$${parseFloat(item.product.price) * item.quantity}`}
                   </span>
                   {item.quantity > 1 && (
                     <span className="text-xs text-muted block">
-                      {formatRupiah(item.product.price)} {t("cart.each")}
+                      {item.product.price} {t("cart.each")}
                     </span>
                   )}
                 </div>
@@ -232,7 +228,9 @@ export default function CartPage() {
               d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
             />
           </svg>
-          <h3 className="font-bold font-heading text-lg">{t("cart.deliveryAddress")}</h3>
+          <h3 className="font-bold font-heading text-lg">
+            {t("cart.deliveryAddress")}
+          </h3>
         </div>
 
         <div className="space-y-3">
@@ -273,11 +271,16 @@ export default function CartPage() {
 
       {/* Summary */}
       <div className="glass-card p-6">
-        <h3 className="font-bold font-heading text-lg mb-4">{t("cart.orderSummary")}</h3>
+        <h3 className="font-bold font-heading text-lg mb-4">
+          {t("cart.orderSummary")}
+        </h3>
 
         <div className="space-y-2 mb-4">
           <div className="flex justify-between text-sm">
-            <span className="text-muted">{t("cart.subtotal")} ({totalItems} {totalItems !== 1 ? t("cart.items") : t("cart.item")})</span>
+            <span className="text-muted">
+              {t("cart.subtotal")} ({totalItems}{" "}
+              {totalItems !== 1 ? t("cart.items") : t("cart.item")})
+            </span>
             <span className="font-medium">{formatRupiah(totalPrice)}</span>
           </div>
           <div className="flex justify-between text-sm">
