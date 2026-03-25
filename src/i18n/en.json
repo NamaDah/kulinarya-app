@@ -6,7 +6,8 @@
     "myOrders": "My Orders",
     "login": "Login",
     "signOut": "Sign Out",
-    "adminDashboard": "Admin Dashboard"
+    "adminDashboard": "Admin Dashboard",
+    "driverDashboard": "Driver Dashboard"
   },
   "home": {
     "heroTitle": "Taste the Flavors of",

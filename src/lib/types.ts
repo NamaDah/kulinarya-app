@@ -68,7 +68,7 @@ export interface OrderItem {
 
 export interface Order {
   id: number;
-  status: "pending" | "confirmed" | "processing" | "shipping" | "done" | "cancelled";
+  status: "pending" | "confirmed" | "processing" | "shipping" | "delivered" | "cancelled";
   payment_status: "unpaid" | "paid" | "expired" | "failed";
   payment_reference: string | null;
   snap_token: string | null;
@@ -124,3 +124,8 @@ export interface PaginatedResponse<T> {
   total: number;
 }
 
+export enum UserRole {
+  Admin = "admin",
+  Customer = "customer",
+  Driver = "driver",
+}

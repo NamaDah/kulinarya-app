@@ -134,6 +134,15 @@ export default function Header() {
                             {t("nav.adminDashboard")}
                           </Link>
                         )}
+                        {user.role === "driver" && (
+                          <Link
+                            href="/driver"
+                            className="block px-4 py-2 text-sm text-muted hover:text-primary hover:bg-surface-warm transition-colors"
+                            onClick={() => setIsProfileOpen(false)}
+                          >
+                            {t("nav.driverDashboard")}
+                          </Link>
+                        )}
                         <button
                           onClick={handleLogout}
                           className="w-full text-left px-4 py-2 text-sm text-red-500 hover:bg-red-50 transition-colors cursor-pointer"

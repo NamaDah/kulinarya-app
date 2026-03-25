@@ -43,45 +43,6 @@ export default function DriverLayout({
 
   return (
     <div>
-      {/* Driver Nav Bar */}
-      <div
-        style={{
-          background: "linear-gradient(135deg, #292524, #44403c)",
-          padding: "0.75rem 1.5rem",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "space-between",
-          position: "sticky",
-          top: 0,
-          zIndex: 50,
-        }}
-      >
-        <div style={{ display: "flex", alignItems: "center", gap: "0.75rem" }}>
-          <span style={{ fontSize: "1.25rem" }}>🚗</span>
-          <span
-            style={{
-              color: "#f59e0b",
-              fontWeight: 700,
-              fontSize: "1.1rem",
-              fontFamily: "var(--font-heading)",
-            }}
-          >
-            Driver Dashboard
-          </span>
-        </div>
-        <div
-          style={{
-            display: "flex",
-            alignItems: "center",
-            gap: "0.5rem",
-            color: "#d6d3d1",
-            fontSize: "0.85rem",
-          }}
-        >
-          <span>👤</span>
-          <span>{user.name}</span>
-        </div>
-      </div>
       {children}
     </div>
   );

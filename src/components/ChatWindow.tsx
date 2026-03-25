@@ -67,8 +67,8 @@ export default function ChatWindow({
         return [...prev, msg];
       });
       setInput("");
-    } catch {
-      // silently fail
+    } catch (err: any) {
+      alert("Failed to send: " + err.message);
     } finally {
       setSending(false);
     }

@@ -6,7 +6,8 @@
     "myOrders": "Pesanan Saya",
     "login": "Masuk",
     "signOut": "Keluar",
-    "adminDashboard": "Dasbor Admin"
+    "adminDashboard": "Dasbor Admin",
+    "driverDashboard": "Dasbor Driver"
   },
   "home": {
     "heroTitle": "Rasakan Cita Rasa",

@@ -113,7 +113,7 @@ export default function AdminOrdersPage() {
           <option value="pending">{t("admin.pending")}</option>
           <option value="processing">{t("admin.processing")}</option>
           <option value="confirmed">{t("admin.confirmed")}</option>
-          <option value="shipped">{t("admin.shipped")}</option>
+          <option value="shipping">{t("admin.shipping")}</option>
           <option value="delivered">{t("admin.delivered")}</option>
           <option value="cancelled">{t("admin.cancelled")}</option>
         </select>
@@ -248,7 +248,7 @@ export default function AdminOrdersPage() {
                           <option value="pending">{t("admin.pending")}</option>
                           <option value="processing">{t("admin.processing")}</option>
                           <option value="confirmed">{t("admin.confirmed")}</option>
-                          <option value="shipped">{t("admin.shipped")}</option>
+                          <option value="shipping">{t("admin.shipped")}</option>
                           <option value="delivered">{t("admin.delivered")}</option>
                           <option value="cancelled">{t("admin.cancelled")}</option>
                         </select>

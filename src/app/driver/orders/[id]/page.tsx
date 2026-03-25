@@ -94,7 +94,7 @@ export default function DriverOrderDetailPage() {
     setDelivering(true);
     try {
       await deliverOrder(order.id);
-      setOrder((prev) => (prev ? { ...prev, status: "done" as const } : prev));
+      setOrder((prev) => (prev ? { ...prev, status: "delivered" as const } : prev));
     } catch {
       // fail silently
     } finally {
@@ -208,11 +208,11 @@ export default function DriverOrderDetailPage() {
               borderRadius: "9999px",
               fontSize: "0.875rem",
               fontWeight: 600,
-              background: order.status === "shipping" ? "#fce7f3" : order.status === "done" ? "#dcfce7" : "#e0e7ff",
-              color: order.status === "shipping" ? "#9d174d" : order.status === "done" ? "#166534" : "#3730a3",
+              background: order.status === "shipping" ? "#fce7f3" : order.status === "delivered" ? "#dcfce7" : "#e0e7ff",
+              color: order.status === "shipping" ? "#9d174d" : order.status === "delivered" ? "#166534" : "#3730a3",
             }}
           >
-            {order.status === "shipping" ? "🚗" : order.status === "done" ? "🎉" : "🍳"}{" "}
+            {order.status === "shipping" ? "🚗" : order.status === "delivered" ? "🎉" : "🍳"}{" "}
             {order.status.charAt(0).toUpperCase() + order.status.slice(1)}
           </span>
         </div>
@@ -260,21 +260,23 @@ export default function DriverOrderDetailPage() {
               👤 {order.user.name}
             </div>
           </div>
-          <button
-            onClick={() => setChatOpen(true)}
-            style={{
-              background: "linear-gradient(135deg, #d97706, #f59e0b)",
-              color: "#fff",
-              border: "none",
-              padding: "0.5rem 1rem",
-              borderRadius: "0.75rem",
-              fontWeight: 600,
-              fontSize: "0.8rem",
-              cursor: "pointer",
-            }}
-          >
-            💬 Chat with Customer
-          </button>
+          {(order.status === "shipping" || order.status === "delivered") && (
+            <button
+              onClick={() => setChatOpen(true)}
+              style={{
+                background: "linear-gradient(135deg, #d97706, #f59e0b)",
+                color: "#fff",
+                border: "none",
+                padding: "0.5rem 1rem",
+                borderRadius: "0.75rem",
+                fontWeight: 600,
+                fontSize: "0.8rem",
+                cursor: "pointer",
+              }}
+            >
+              💬 Chat with Customer
+            </button>
+          )}
         </div>
       )}
 
