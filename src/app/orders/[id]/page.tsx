@@ -16,7 +16,7 @@ const ORDER_STEPS = [
   { key: "confirmed", label: "Confirmed", icon: "✅", desc: "Order accepted" },
   { key: "processing", label: "Cooking", icon: "🍳", desc: "Being prepared" },
   { key: "shipping", label: "Shipping", icon: "🚗", desc: "On the way" },
-  { key: "done", label: "Done", icon: "🎉", desc: "Delivered" },
+  { key: "delivered", label: "Delivered", icon: "🎉", desc: "Delivered" },
 ] as const;
 
 function stepIndex(status: string): number {
@@ -30,7 +30,7 @@ const statusConfig: Record<string, { bg: string; color: string; icon: string }> 
   confirmed: { bg: "#dbeafe", color: "#1e40af", icon: "✅" },
   processing: { bg: "#e0e7ff", color: "#3730a3", icon: "🍳" },
   shipping: { bg: "#fce7f3", color: "#9d174d", icon: "🚗" },
-  done: { bg: "#dcfce7", color: "#166534", icon: "🎉" },
+  delivered: { bg: "#dcfce7", color: "#166534", icon: "🎉" },
   cancelled: { bg: "#fee2e2", color: "#991b1b", icon: "❌" },
 };
 
@@ -480,7 +480,7 @@ export default function OrderDetailPage() {
               🚗 {order.driver.name}
             </div>
           </div>
-          {(order.status === "shipping" || order.status === "done") && (
+          {(order.status === "shipping" || order.status === "delivered") && (
             <button
               onClick={() => setChatOpen(true)}
               style={{
@@ -590,8 +590,8 @@ export default function OrderDetailPage() {
         </div>
       )}
 
-      {/* Star Rating — only when order is done */}
-      {order.status === "done" && (
+      {/* Star Rating — only when order is delivered */}
+      {order.status === "delivered" && (
         <StarRating
           rating={order.rating}
           onRate={handleRate}
