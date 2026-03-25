@@ -129,3 +129,22 @@ export async function getUser(): Promise<User> {
 
   return res.json();
 }
+
+/**
+ * Fetch the Google OAuth redirect URL.
+ */
+export async function getGoogleAuthUrl(): Promise<string> {
+  const res = await fetch("/api/auth/google/redirect", {
+    method: "GET",
+    headers: {
+      Accept: "application/json",
+    },
+  });
+
+  if (!res.ok) {
+    throw new Error("Failed to initialize Google Login");
+  }
+
+  const data = await res.json();
+  return data.url;
+}
