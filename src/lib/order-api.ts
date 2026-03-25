@@ -1,9 +1,4 @@
-/**
- * Order API — authenticated endpoints for checkout and order management.
- * Uses same-origin requests via Next.js proxy rewrites with XSRF token.
- */
-
-import { Order, PaginatedResponse } from "./types";
+import { Order, PaginatedResponse, Message } from "./types";
 
 /**
  * Read the XSRF-TOKEN cookie value.
@@ -87,3 +82,67 @@ export async function getOrder(id: number): Promise<Order> {
 
   return res.json();
 }
+
+/**
+ * Rate a completed order (1-5 stars).
+ */
+export async function rateOrder(orderId: number, rating: number): Promise<{ message: string; rating: number }> {
+  const res = await fetch(`/api/orders/${orderId}/rate`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Accept: "application/json",
+      "X-XSRF-TOKEN": getXsrfToken(),
+    },
+    credentials: "include",
+    body: JSON.stringify({ rating }),
+  });
+
+  if (!res.ok) {
+    const err = await res.json();
+    throw new Error(err.message || "Failed to rate order");
+  }
+
+  return res.json();
+}
+
+/**
+ * Get messages for an order.
+ */
+export async function getMessages(orderId: number): Promise<Message[]> {
+  const res = await fetch(`/api/orders/${orderId}/messages`, {
+    method: "GET",
+    headers: { Accept: "application/json" },
+    credentials: "include",
+  });
+
+  if (!res.ok) {
+    throw new Error("Failed to fetch messages");
+  }
+
+  return res.json();
+}
+
+/**
+ * Send a message on an order.
+ */
+export async function sendMessage(orderId: number, receiverId: number, message: string): Promise<Message> {
+  const res = await fetch(`/api/orders/${orderId}/messages`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Accept: "application/json",
+      "X-XSRF-TOKEN": getXsrfToken(),
+    },
+    credentials: "include",
+    body: JSON.stringify({ receiver_id: receiverId, message }),
+  });
+
+  if (!res.ok) {
+    const err = await res.json();
+    throw new Error(err.message || "Failed to send message");
+  }
+
+  return res.json();
+}
+

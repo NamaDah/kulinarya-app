@@ -68,11 +68,13 @@ export interface OrderItem {
 
 export interface Order {
   id: number;
-  status: "pending" | "confirmed" | "processing" | "cancelled";
+  status: "pending" | "confirmed" | "processing" | "shipping" | "done" | "cancelled";
   payment_status: "unpaid" | "paid" | "expired" | "failed";
   payment_reference: string | null;
   snap_token: string | null;
   total_amount: string;
+  rating?: number | null;
+  driver?: { id: number; name: string } | null;
   items: OrderItem[];
   redirect_url?: string;
   address: string;
@@ -88,11 +90,23 @@ export interface AdminOrder extends Order {
   } | null;
 }
 
+export interface Message {
+  id: number;
+  order_id: number;
+  sender_id: number;
+  sender_name: string;
+  sender_role: string;
+  receiver_id: number;
+  message: string;
+  read_at?: string | null;
+  created_at: string;
+}
+
 export interface User {
   id: number;
   name: string;
   email: string;
-  role: "admin" | "user";
+  role: "admin" | "user" | "driver";
   created_at: string;
 }
 
@@ -109,3 +123,4 @@ export interface PaginatedResponse<T> {
   per_page: number;
   total: number;
 }
+

@@ -1,12 +1,14 @@
 
-type OrderStatus = "pending" | "processing" | "confirmed" | "cancelled";
+type OrderStatus = "pending" | "processing" | "confirmed" | "shipping" | "done" | "cancelled";
 
 type PaymentStatus = "unpaid" | "paid" | "expired" | "failed";
 
 export const statusColors: Record<OrderStatus, { bg: string; color: string }> = {
   pending: { bg: "#fef3c7", color: "#92400e" },
-  processing: { bg: "#dbeafe", color: "#1e40af" },
-  confirmed: { bg: "#dcfce7", color: "#166534" },
+  confirmed: { bg: "#dbeafe", color: "#1e40af" },
+  processing: { bg: "#e0e7ff", color: "#3730a3" },
+  shipping: { bg: "#fce7f3", color: "#9d174d" },
+  done: { bg: "#dcfce7", color: "#166534" },
   cancelled: { bg: "#fee2e2", color: "#991b1b" },
 };
 
