@@ -1,8 +1,4 @@
-/**
- * Driver API — authenticated endpoints for driver operations.
- */
-
-import { Order, PaginatedResponse } from "./types";
+import { Order, PaginatedResponse, DriverProfile } from "./types";
 
 function getXsrfToken(): string {
   const match = document.cookie
@@ -85,6 +81,40 @@ export async function deliverOrder(orderId: number): Promise<{ message: string }
   if (!res.ok) {
     const err = await res.json();
     throw new Error(err.message || "Failed to deliver order");
+  }
+
+  return res.json();
+}
+
+/**
+ * Get the driver's completed order history (delivered orders with ratings).
+ */
+export async function getDriverHistory(page = 1): Promise<PaginatedResponse<Order & { user?: { id: number; name: string; email: string } }>> {
+  const res = await fetch(`/api/driver/orders/history?page=${page}`, {
+    method: "GET",
+    headers: { Accept: "application/json" },
+    credentials: "include",
+  });
+
+  if (!res.ok) {
+    throw new Error("Failed to fetch driver history");
+  }
+
+  return res.json();
+}
+
+/**
+ * Get the driver's profile with accumulated rating.
+ */
+export async function getDriverProfile(): Promise<DriverProfile> {
+  const res = await fetch(`/api/driver/profile`, {
+    method: "GET",
+    headers: { Accept: "application/json" },
+    credentials: "include",
+  });
+
+  if (!res.ok) {
+    throw new Error("Failed to fetch driver profile");
   }
 
   return res.json();

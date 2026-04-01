@@ -298,6 +298,56 @@ export default function DriverOrderDetailPage() {
         </div>
       )}
 
+      {/* Customer Rating */}
+      {order.status === "delivered" && (
+        <div
+          className="glass-card"
+          style={{
+            padding: "1.25rem",
+            marginBottom: "1.5rem",
+            textAlign: "center",
+            cursor: "default",
+          }}
+        >
+          <div
+            style={{
+              fontSize: "0.8rem",
+              color: "#78716c",
+              fontWeight: 600,
+              marginBottom: "0.75rem",
+              textTransform: "uppercase",
+              letterSpacing: "0.05em",
+            }}
+          >
+            Customer Rating
+          </div>
+          {order.rating ? (
+            <>
+              <div style={{ display: "flex", justifyContent: "center", gap: "0.35rem" }}>
+                {[1, 2, 3, 4, 5].map((star) => (
+                  <span
+                    key={star}
+                    style={{
+                      fontSize: "2rem",
+                      filter: star <= (order.rating || 0) ? "none" : "grayscale(1) opacity(0.25)",
+                    }}
+                  >
+                    ⭐
+                  </span>
+                ))}
+              </div>
+              <div style={{ fontSize: "0.8rem", color: "#78716c", marginTop: "0.5rem" }}>
+                Rated {order.rating}/5 stars
+              </div>
+            </>
+          ) : (
+            <div style={{ fontSize: "0.85rem", color: "#a8a29e", fontStyle: "italic" }}>
+              Not rated yet
+            </div>
+          )}
+        </div>
+      )}
+
       {/* Order Items */}
       <div className="glass-card" style={{ overflow: "hidden" }}>
         <div
