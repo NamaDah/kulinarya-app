@@ -248,7 +248,8 @@
     "signingIn": "Sedang masuk...",
     "signInBtn": "Masuk",
     "adminOnly": "Hanya akun admin yang dapat mengakses area ini.",
-    "loginFailed": "Gagal masuk"
+    "loginFailed": "Gagal masuk",
+    "driver_role": "Driver"
   },
   "language": {
     "en": "EN",

@@ -42,7 +42,7 @@ export default function AdminUsersPage() {
 
   const handleRoleChange = async (
     userId: number,
-    newRole: "admin" | "user",
+    newRole: "admin" | "user" | "driver",
   ) => {
     setProcessingId(userId);
     try {
@@ -246,7 +246,7 @@ export default function AdminUsersPage() {
                         onChange={(e) =>
                           handleRoleChange(
                             user.id,
-                            e.target.value as "admin" | "user",
+                            e.target.value as "admin" | "user" | "driver",
                           )
                         }
                         disabled={processingId === user.id}
@@ -259,6 +259,7 @@ export default function AdminUsersPage() {
                       >
                          <option value="user">{t("admin.user")}</option>
                          <option value="admin">{t("admin.admin_role")}</option>
+                         <option value="driver">{t("admin.driver_role")}</option>
                       </select>
 
                       <button
