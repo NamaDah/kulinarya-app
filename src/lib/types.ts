@@ -129,3 +129,11 @@ export enum UserRole {
   Customer = "customer",
   Driver = "driver",
 }
+
+export interface DriverProfile {
+  id: number;
+  name: string;
+  average_rating: string | null;
+  total_ratings: number;
+  total_deliveries: number;
+}
