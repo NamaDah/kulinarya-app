@@ -248,7 +248,8 @@
     "signingIn": "Signing in...",
     "signInBtn": "Sign In",
     "adminOnly": "Only admin accounts can access this area.",
-    "loginFailed": "Login failed"
+    "loginFailed": "Login failed",
+    "driver_role": "Driver"
   },
   "language": {
     "en": "EN",

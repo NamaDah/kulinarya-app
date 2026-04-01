@@ -132,7 +132,7 @@ export async function getAdminUsers(
 
 export async function updateUserRole(
   id: number,
-  role: "admin" | "user",
+  role: "admin" | "user" | "driver",
 ): Promise<{ message: string; user: User }> {
   return adminFetch<{ message: string; user: User }>(
     `/admin/users/${id}/role`,
